@@ -1,18 +1,22 @@
+from Hand import Hand
+from Player import Player
+
 class GameState:
-    def __init__(self, discarded, player,current):
+    def __init__(self, discarded: Hand, players: List[Player], current: List[Hand]):
         self.discarded = discarded 
-        self.player = player
-        self.current = current
-        self.lastIndex = 0
+        self.players = players
+        self.current = current # list of hands
+        self.lastIndex = -1
+        # separately track current player, last player to put down cards, 
 
     
     def toMove(self):
         if len(self.discarded) == 0:
-            for i in range(0,len(self.player)):
-                if self.player[i].role == 'landlord':
-                    return  i
+            for i in range(0,len(self.players)):
+                if self.players[i].role == 'LANDLORD':
+                    return i
         else: 
-            if self.lastIndex == len(self.player)-1:
+            if self.lastIndex == len(self.players)-1:
                 return 0
             else:
                 return self.lastIndex+1
@@ -23,7 +27,7 @@ class GameState:
     # hand: list of hand or list
     def getActions(self):
         
-        currentHand = self.player[self.toMove()].hand
+        currentHand = self.players[self.toMove()].hand
 
         actions = []
         def getSingle():
@@ -91,16 +95,16 @@ class GameState:
         
 
     def isTerminal(self):
-        for i in self.player:
+        for i in self.players:
             if len(i.hand) == 0:
                 return True
         return False
     
     def getUtility(self):
-        if len(self.player[self.toMove()].hand) == 0:
+        if len(self.players[self.toMove()].hand) == 0:
             return +1
         
-        for i in self.player: 
+        for i in self.players: 
             if len(i.hand) == 0:
                 return -1
             
@@ -108,8 +112,8 @@ class GameState:
 
     def generateSuccessor(self,cards):
 
-        newPlayer = self.player.copy()
-        newPlayer[self.toMove()].hand.cards = [i for i in self.player[self.toMove()].hand.cards if i not in cards]
+        newPlayers = self.players.copy()
+        newPlayers[self.toMove()].hand.cards = [i for i in self.players[self.toMove()].hand.cards if i not in cards]
         newRound = self.round.copy()
         newRound.hand.cards.append(cards)
         newDiscarded = self.discarded.copy()
@@ -117,6 +121,6 @@ class GameState:
         
 
 
-        newState = GameState(newDiscarded,newPlayer,self.toMove)
+        newState = GameState(newDiscarded,newPlayers,self.toMove)
 
         return newState
