@@ -12,9 +12,12 @@ class PlayableHand(Hand):
 
     def __init__(self, cards):
         super(cards)
+        assert PlayableHand.isValidHand(self.cards)
+        self.type = ""
+
     
     @staticmethod
-    def isValidHand(self):
+    def isValidHand(cards):
         """
         This is a static method for determining whether or not a given list of
         Card objects makes up a valid hand.
@@ -28,15 +31,15 @@ class PlayableHand(Hand):
         """
 
         # it looks ugly, but raw Boolean logic should be faster than if/else blocks
-        vals = [card.value for card in self.cards]
+        vals = [card.value for card in cards]
         vals.sort()
-        return (len(self.cards) == 1 or 
-                (len(self.cards) == 2 and (self.cards.count(self.cards[0].value) == 2
-                    or (16 in self.cards and 17 in self.cards))) or
-                (len(self.cards) == 3 and self.cards.count(self.cards[0].value) == 3) or
-                (len(self.cards) == 4 and (self.cards.count(self.cards[0].value) >= 3 or
-                    self.cards.count(self.cards[1].value) >= 3)) or
-                (len(self.cards == 5) and self.cards[4].value < 15 and vals == range(min(vals), max(vals) + 1)))
+        return (len(cards) == 1 or 
+                (len(cards) == 2 and (cards.count(cards[0].value) == 2
+                    or (16 in cards and 17 in cards))) or
+                (len(cards) == 3 and cards.count(cards[0].value) == 3) or
+                (len(cards) == 4 and (cards.count(cards[0].value) >= 3 or 
+                cards.count(cards[1].value) >= 3)) or
+                (len(cards == 5) and cards[4].value < 15 and vals == range(min(vals), max(vals) + 1)))
 
     def _isRocket(self):
         """
