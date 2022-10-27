@@ -2,12 +2,12 @@ from Hand import Hand
 from Player import Player
 
 class GameState:
-    def __init__(self, discarded: Hand, players: List[Player], current: List[Hand]):
+    def __init__(self, discarded: Hand, players: List[Player], current: List[Hand], currentPlayerIndex = -1,lastPlayerIndex = -1):
         self.discarded = discarded 
         self.players = players
         self.current = current # list of hands
-        self.lastIndex = -1
-        # separately track current player, last player to put down cards, 
+        self.lastPlayerIndex = currentPlayerIndex # last player who puts down non empty Hand, 
+        self.currentPlayerIndex = lastPlayerIndex # current player index to make an action
 
     
     def toMove(self):
@@ -16,10 +16,10 @@ class GameState:
                 if self.players[i].role == 'LANDLORD':
                     return i
         else: 
-            if self.lastIndex == len(self.players)-1:
+            if self.currentPlayerIndex == len(self.players)-1:
                 return 0
             else:
-                return self.lastIndex+1
+                return self.currentPlayerIndex+1
 
 
     # hand is sorted
@@ -114,7 +114,7 @@ class GameState:
 
         newPlayers = self.players.copy()
         newPlayers[self.toMove()].hand.cards = [i for i in self.players[self.toMove()].hand.cards if i not in cards]
-        newRound = self.round.copy()
+        newRound = self.current.copy()
         newRound.hand.cards.append(cards)
         newDiscarded = self.discarded.copy()
         newDiscarded.extend(cards)
@@ -122,5 +122,6 @@ class GameState:
 
 
         newState = GameState(newDiscarded,newPlayers,self.toMove)
+        newState.currentPlayerIndex +=1
 
         return newState
