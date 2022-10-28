@@ -1,8 +1,8 @@
 import sys
 
 from Deck import Deck
-from GameState import GameState
 from Hand import Hand
+from GameState import GameState
 
 
 class Game:
@@ -17,6 +17,7 @@ class Game:
         landlordCards = deck.deal(numCards=20)
         peasant1Cards = deck.deal(numCards=17)
         peasant2Cards = deck.deal(numCards=17)
+
 
         # create players with dealt hands of cards
         landLord = loadPlayer(landlordType, landlordCards, "LANDLORD")
@@ -93,7 +94,7 @@ def readCommand( argv ):
 
     return args
 
-def runGames(landlordType, peasant1Type, peasant2Type, numGames, timeout):
+def runGames(landlordType, peasant1Type, peasant2Type, numGames):
     """
     Run multiple games in succession and report landlord rate of winning
     """
@@ -101,7 +102,7 @@ def runGames(landlordType, peasant1Type, peasant2Type, numGames, timeout):
 
     # run all games
     for i in range(numGames):
-        game = Game(landlordType, peasant1Type, peasant2Type, timeout)
+        game = Game(landlordType, peasant1Type, peasant2Type)
         game.run()
         games.append(game)
 
