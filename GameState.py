@@ -1,6 +1,6 @@
 from Hand import Hand
 from Player import Player
-
+from typing import List
 
 class GameState:
     def __init__(self, discarded: Hand, players: List[Player], current: List[Hand], currentPlayerIndex = -1,lastPlayerIndex = -1):
