@@ -8,7 +8,7 @@ class Hand:
     cards       List[Card]
     """
     
-    def __init__(self, cards: List[Card]):
+    def __init__(self, cards: list[Card]):
         # cards is allowed to be empty during construction
         self.cards = cards
     

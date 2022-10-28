@@ -1,6 +1,8 @@
 import sys
 
+from Deck import Deck
 from GameState import GameState
+from Hand import Hand
 
 
 class Game:
@@ -8,22 +10,31 @@ class Game:
     The Game manages the control flow and solicits actions from agents.
     """
 
-    def __init__(self, landlordType, peasant1Type, peasant2Type, timeout):
+    def __init__(self, landlordType, peasant1Type, peasant2Type):
         # shuffle and deal deck
-        deck = None  # TODO UPDATE with deck object and .shuffle() with a random seed
+        deck = Deck()
 
         landlordCards = deck.deal(numCards=20)
         peasant1Cards = deck.deal(numCards=17)
         peasant2Cards = deck.deal(numCards=17)
 
-        # create players with dealt hands of cards
-        landLordAgent = loadAgent(landlordType, landlordCards)
-        peasant1Agent = loadAgent(peasant1Type, peasant1Cards)
-        peasant2Agent = loadAgent(peasant2Type, peasant2Cards)
+        print("landlord cards", len(landlordCards))
+        print("peasant1 cards", len(peasant1Cards))
+        print("peasant2 cards", len(peasant2Cards))
 
-        self.state = GameState([], [landLordAgent, peasant1Agent, peasant2Agent], [])
+
+        # create players with dealt hands of cards
+        landLord = loadPlayer(landlordType, landlordCards, "LANDLORD")
+        peasant1 = loadPlayer(peasant1Type, peasant1Cards, "PEASANT")
+        peasant2 = loadPlayer(peasant2Type, peasant2Cards, "PEASANT")
+
+
+        discarded = Hand([]) # discard pile initially empty
+        players = [landLord, peasant1, peasant2]
+        current = [] # initially no cards in play
+
+        self.state = GameState(discarded, players, current)
         self.moveHistory = []
-        self.timeout = timeout # TODO currently not in use
 
 
     def run(self):
@@ -36,20 +47,16 @@ class Game:
             agentIndex = self.state.toMove()
             agent = self.state.player[agentIndex]
 
-            # Prompt agent for action
+            # Prompt agent for action - will be a Hand of cards
             action = agent.getAction(self.state)
 
             # Execute action
             self.moveHistory.append((agentIndex, action))
-            self.state = self.state(generateSuccessor(agentIndex, action))
+            self.state = self.state.generateSuccessor(action)
 
             # Change display -- if the player did not pass, print the cards they played
-            # TODO - currently hardcoded to print to console, should be more flexible
-            if len(action > 0):
+            if len(action.cards) > 0:
                 print(action.print())
-
-            # need to update next player to move -- will likely need to modify current toMove function
-            # because if the player passes, lastPlayerIndex will not update
 
 
 
@@ -78,8 +85,6 @@ def readCommand( argv ):
                       help='The agent type for the first peasant player', default='RandomAgent')
     parser.add_option('-q', '--peasant2', dest='peasantAgent2',
                       help='The agent type for the second peasant player', default='RandomAgent')
-    parser.add_option('--timeout', dest='timeout', type='int',
-                      help='Maximum length of time an agent can spend computing in a single game', default=30)
 
     options, other = parser.parse_args(argv)
     if len(other) != 0:
@@ -90,10 +95,8 @@ def readCommand( argv ):
     args['peasant1Type'] = options.peasantAgent1
     args['peasant2Type'] = options.peasantAgent2
     args['numGames'] = options.numGames
-    args['timeout'] = options.timeout
 
     return args
-
 
 def runGames(landlordType, peasant1Type, peasant2Type, numGames, timeout):
     """
@@ -107,12 +110,23 @@ def runGames(landlordType, peasant1Type, peasant2Type, numGames, timeout):
         game.run()
         games.append(game)
 
-    # tally up win rate for landlord
-    wins = [game.state.isWin() for game in games]
-    winRate = wins.count(True) / float(len(wins))
-    print('Landlord Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate))
+    # tally up wins - utility positive if landlord wins
+    landlordWins = [game.state.getUtility() > 0 for game in games]
 
-    return games
+    totalGames = len(games)
+    landlordWinCount = landlordWins.count(True)
+    peasantsWinCount = totalGames - landlordWinCount # someone must get rid of all cards first, can simply subtract
+
+    # win rate for landlord
+    landlordWinRate = landlordWinCount / float(totalGames)
+    print('Landlord Win Rate:      %d/%d (%.2f)' % (landlordWinCount, totalGames, landlordWinRate))
+
+    print()
+
+    # win rate for peasants
+    peasantsWinRate = peasantsWinCount / float(totalGames)
+    print('Peasants Win Rate:      %d/%d (%.2f)' % (peasantsWinCount, totalGames, peasantsWinRate))
+
 
 
 if __name__ == '__main__':
