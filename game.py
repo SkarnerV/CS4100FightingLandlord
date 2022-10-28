@@ -18,11 +18,6 @@ class Game:
         peasant1Cards = deck.deal(numCards=17)
         peasant2Cards = deck.deal(numCards=17)
 
-        print("landlord cards", len(landlordCards))
-        print("peasant1 cards", len(peasant1Cards))
-        print("peasant2 cards", len(peasant2Cards))
-
-
         # create players with dealt hands of cards
         landLord = loadPlayer(landlordType, landlordCards, "LANDLORD")
         peasant1 = loadPlayer(peasant1Type, peasant1Cards, "PEASANT")
