@@ -19,7 +19,7 @@ class GameState:
                     return i
         # move to the next player from the last player
         else: 
-            return self.nextPlayer(self.currentPlayerIndex) # for the next move +1 on the index of current player
+            return self.currentPlayerIndex # for the next move +1 on the index of current player
    
     # helper function that is used to avoid duplicate
     # @return: the next player given current index
