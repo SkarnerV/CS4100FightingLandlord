@@ -1,8 +1,10 @@
 import sys
 
+from Agent import RandomAgent
 from Deck import Deck
 from Hand import Hand
 from GameState import GameState
+from Player import Player
 
 
 class Game:
@@ -20,13 +22,13 @@ class Game:
 
 
         # create players with dealt hands of cards
-        landLord = loadPlayer(landlordType, landlordCards, "LANDLORD")
-        peasant1 = loadPlayer(peasant1Type, peasant1Cards, "PEASANT")
-        peasant2 = loadPlayer(peasant2Type, peasant2Cards, "PEASANT")
+        landlord = loadPlayer("Landlord", landlordType, landlordCards, "LANDLORD")
+        peasant1 = loadPlayer("Peasant 1", peasant1Type, peasant1Cards, "PEASANT")
+        peasant2 = loadPlayer("Peasant 2", peasant2Type, peasant2Cards, "PEASANT")
 
 
         discarded = Hand([]) # discard pile initially empty
-        players = [landLord, peasant1, peasant2]
+        players = [landlord, peasant1, peasant2]
         current = [] # initially no cards in play
 
         self.state = GameState(discarded, players, current)
@@ -39,6 +41,8 @@ class Game:
         """
 
         while not self.state.isTerminal():
+            # TODO - need method on GameState that outputs string for display
+
             # Fetch next agent
             agentIndex = self.state.toMove()
             agent = self.state.player[agentIndex]
@@ -54,6 +58,25 @@ class Game:
             if len(action.cards) > 0:
                 print(action.print())
 
+
+def loadPlayer(playerName, playerType, initialCards: Hand, role):
+  """
+   Instantiates a player/agent of the given type, initial hand, and player role
+  :param playerName: name assigned to player (used when prompting a human player to make a move)
+  :param playerType: denotes the implementation of player to be used (ex: 'RandomAgent', 'Human')
+  :param initialCards: the player's initial hand of cards
+  :param role: "LANDLORD" | "PEASANT"
+  :return: a new player with the given attributes
+  """
+  assert role == "LANDLORD" or role == "PEASANT", "Unknown role: " + role
+
+  playerType = playerType.lower()
+  if playerType == 'human':
+      return Player(playerName, initialCards, role)
+  elif playerType == 'randomagent':
+      return RandomAgent(playerName, initialCards, role)
+  else:
+      raise Exception("Unknown player type: " + playerType)
 
 
 
