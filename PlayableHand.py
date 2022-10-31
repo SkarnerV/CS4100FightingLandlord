@@ -30,11 +30,11 @@ class PlayableHand(Hand):
         A valid 2 card hand is 2 of a kind (2 jokers is a valid hand).
         A valid 3 card hand is 3 of a kind.
         A valid 4 card hand is at least 3 of the same valued card.
-        A 5 card hand is valid if it is equivalent to a straight in poker.
+        A 5 card hand is valid if it is equivalent to a  in poker.
         For a 5 card hand, 2's and jokers are not allowed.
         """
         return (self._isSingle() or self._isDouble() or self._isTriple() or
-                self._isQuad() or self._isStraight() or self._isBomb() or self._isRocket())
+                self._isQuad() or self._isSequence() or self._isBomb() or self._isRocket())
 
     def _setType(self):
         """
@@ -46,8 +46,8 @@ class PlayableHand(Hand):
             return HandTypes.ROCKET
         if self._isBomb():
             return HandTypes.BOMB
-        if self._isStraight():
-            return HandTypes.STRAIGHT
+        if self._isSequence():
+            return HandTypes.SEQUENCE
         if self._isQuad():
             return HandTypes.QUAD
         if self._isTriple():
@@ -77,9 +77,9 @@ class PlayableHand(Hand):
         return (len(self.cards) == 4 and
                 [c.value for c in self.cards].count(self.cards[0].value) == 4)
     
-    def _isStraight(self):
+    def _isSequence(self):
         """
-        Returns True if this PlayableHand is a valid straight.
+        Returns True if this PlayableHand is a valid sequence.
         """
         vals = [card.value for card in self.cards]
         vals.sort()
@@ -173,9 +173,9 @@ class PlayableHand(Hand):
         
         return False
 
-    def _compareStraights(self, other):
+    def _compareSequences(self, other):
         """
-        Assumes that this hand and other are straights, and returns True
+        Assumes that this hand and other are sequences, and returns True
         if this hand's cards are greater in value than other's cards.
         This is a helper method for canPlay, and should never be called on its own.
         PARAMS:
@@ -217,8 +217,8 @@ class PlayableHand(Hand):
             return self._compareBombs(other)
         if self.type != other.type:
             return False
-        if self.type == HandTypes.STRAIGHT:
-            return self._compareStraights(other)
+        if self.type == HandTypes.SEQUENCE:
+            return self._compareSequences(other)
         if self.type == HandTypes.QUAD:
             return self._compareFours(other)
         if self.type == HandTypes.TRIPLE:

@@ -10,6 +10,6 @@ class HandTypes(Enum):
     DOUBLE = 2
     TRIPLE = 3
     QUAD = 4
-    STRAIGHT = 5
+    SEQUENCE = 5
     BOMB = 6
     ROCKET = 7
