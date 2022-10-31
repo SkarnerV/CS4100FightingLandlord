@@ -23,9 +23,9 @@ class PlayableHand(Hand):
 
         self.type = self._setType()
 
-    def isValidHand():
+    def isValidHand(self):
         """
-        This is a method for determining whether or not a given list of
+        This is a method for determining whether or the given list of
         Card objects makes up a valid hand.
         A hand is valid if it is a set of 1, 2, 3, 4, or 5 cards.
         A valid 1 card hand is any card.

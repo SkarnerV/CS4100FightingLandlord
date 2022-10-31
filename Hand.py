@@ -100,6 +100,7 @@ class Hand:
         cards = list(set(self.cards))
         cards.sort(key=lambda c: c.value)
         ret = []
+        ret.append([]) # PASS
         # add all types of hands to ret
         ret.append([PlayableHand([card]) for card in cards])
 
