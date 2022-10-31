@@ -15,7 +15,7 @@ class PlayableHand(Hand):
     """
 
     def __init__(self, cards):
-        super(cards)
+        super().__init__(cards)
         assert PlayableHand.isValidHand(self.cards)
         self.type = self._setType()
 
