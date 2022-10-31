@@ -8,18 +8,19 @@ class PlayableHand(Hand):
     during a turn of Fighting the Landlord.
     It is implemented as a subclass of Hand, with additional methods ensuring
     that the hand is valid and comparing the hand to another possible hand.
+
+    isValidHand() should be called BEFORE creating a PlayableHand
+    with a given hand of cards.
     """
 
     def __init__(self, cards):
-        super(cards)
-        assert PlayableHand.isValidHand(self.cards)
-        self.type = ""
+        super().__init__(cards)
+        assert self.isValidHand()
+        self.type = self._setType()
 
-    
-    @staticmethod
-    def isValidHand(cards):
+    def isValidHand():
         """
-        This is a static method for determining whether or not a given list of
+        This is a method for determining whether or not a given list of
         Card objects makes up a valid hand.
         A hand is valid if it is a set of 1, 2, 3, 4, or 5 cards.
         A valid 1 card hand is any card.
