@@ -38,3 +38,7 @@ class Card:
         # override of equality method
         if isinstance(other, self.__class__):
             return self.suit == other.suit and self.value == other.value
+    
+    def __hash__(self):
+        # override of hashing method
+        return hash(("suit", self.suit, "value", self.value))

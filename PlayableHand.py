@@ -1,5 +1,6 @@
 from Hand import Hand
 from Card import Card
+from HandTypes import HandTypes
 
 class PlayableHand(Hand):
     """
@@ -8,12 +9,15 @@ class PlayableHand(Hand):
     during a turn of Fighting the Landlord.
     It is implemented as a subclass of Hand, with additional methods ensuring
     that the hand is valid and comparing the hand to another possible hand.
+
+    PlayableHand.isValidHand(cards) should be called BEFORE creating a PlayableHand
+    with a given hand of cards.
     """
 
     def __init__(self, cards):
         super(cards)
         assert PlayableHand.isValidHand(self.cards)
-        self.type = ""
+        self.type = self._setType()
 
     
     @staticmethod
@@ -29,17 +33,32 @@ class PlayableHand(Hand):
         A 5 card hand is valid if it is equivalent to a straight in poker.
         For a 5 card hand, 2's and jokers are not allowed.
         """
+        return (self._isSingle() or self._isDouble() or self._isTriple() or
+                self._isQuad() or self._isStraight() or self._isBomb() or self._isRocket())
 
-        # it looks ugly, but raw Boolean logic should be faster than if/else blocks
-        vals = [card.value for card in cards]
-        vals.sort()
-        return (len(cards) == 1 or 
-                (len(cards) == 2 and (cards.count(cards[0].value) == 2
-                    or (16 in cards and 17 in cards))) or
-                (len(cards) == 3 and cards.count(cards[0].value) == 3) or
-                (len(cards) == 4 and (cards.count(cards[0].value) >= 3 or 
-                cards.count(cards[1].value) >= 3)) or
-                (len(cards == 5) and cards[4].value < 15 and vals == range(min(vals), max(vals) + 1)))
+    def _setType(self):
+        """
+        Returns a HandTypes value based on self.cards().
+        Used to set self.type to the correct value.
+        """
+
+        if self._isRocket():
+            return HandTypes.ROCKET
+        if self._isBomb():
+            return HandTypes.BOMB
+        if self._isStraight():
+            return HandTypes.STRAIGHT
+        if self._isQuad():
+            return HandTypes.QUAD
+        if self._isTriple():
+            return HandTypes.TRIPLE
+        if self._isDouble():
+            return HandTypes.DOUBLE
+        if self._isSingle():
+            return HandTypes.SINGLE
+        
+        assert False # this should never be reached
+
 
     def _isRocket(self):
         """
@@ -57,6 +76,40 @@ class PlayableHand(Hand):
 
         return (len(self.cards) == 4 and
                 [c.value for c in self.cards].count(self.cards[0].value) == 4)
+    
+    def _isStraight(self):
+        """
+        Returns True if this PlayableHand is a valid straight.
+        """
+        vals = [card.value for card in self.cards]
+        vals.sort()
+        return (len(self.cards == 5) and self.cards[4].value < 15 and
+        vals == range(min(vals), max(vals) + 1))
+
+    def _isQuad(self):
+        """
+        Returns True if this PlayableHand is a valid 4-card (non-bomb) hand.
+        """
+        return (len(cards) == 4 and (cards.count(cards[0].value) >= 3 or 
+                cards.count(cards[1].value) >= 3))
+
+    def _isTriple(self):
+        """
+        Returns True if this PlayableHand is a valid triple.
+        """
+        return len(cards) == 3 and cards.count(cards[0].value) == 3
+
+    def _isDouble(self):
+        """
+        Returns True if this PlayableHand is a valid pair (double).
+        """
+        return len(cards) == 2 and cards.count(cards[0].value) == 2
+
+    def _isSingle(self):
+        """
+        Returns True if this PlayableHand is a valid single card.
+        """
+        return len(cards) == 1
 
     def _compareOnes(self, other):
         """
@@ -114,15 +167,24 @@ class PlayableHand(Hand):
         else:
             o_three = other.cards[1].value
         
+        # can't have 3334 and 3335 because only 4 3s in a deck
         if s_three > o_three:
             return True
-        if s_three < o_three:
-            return False
         
-        s = sum(c.value for c in self.cards)
-        o = sum(c.value for c in other.cards)
-        return (s - 3 * s_three > o - 3 * o_three)
+        return False
 
+    def _compareStraights(self, other):
+        """
+        Assumes that this hand and other are straights, and returns True
+        if this hand's cards are greater in value than other's cards.
+        This is a helper method for canPlay, and should never be called on its own.
+        PARAMS:
+        other       PlayableHand
+        """
+
+        return (max(self.cards, key=lambda c: c.value).value >
+        max(other.cards, key=lambda c: c.value).value)
+    
     def _compareBombs(self, other):
         """
         Assumes that this hand and other contain only three cards, and returns True
@@ -145,19 +207,26 @@ class PlayableHand(Hand):
         """
 
         assert isinstance(other, self.__class__)
-        if self._isRocket():
+
+        if self.type == HandTypes.ROCKET:
             return True
-        if self._isBomb() and not (other._isRocket() or other._isBomb()):
+        if self.type == HandTypes.BOMB and not (other.type == HandTypes.ROCKET or
+        other.type == HandTypes.BOMB):
             return True
-        if self._isBomb() and other._isBomb():
+        if self.type == HandTypes.BOMB and other.type == HandTypes.BOMB:
             return self._compareBombs(other)
-        if len(self.cards) != len(other.cards):
+        if self.type != other.type:
             return False
-        if len(self.cards == 4):
+        if self.type == HandTypes.STRAIGHT:
+            return self._compareStraights(other)
+        if self.type == HandTypes.QUAD:
             return self._compareFours(other)
-        if len(self.cards == 3):
+        if self.type == HandTypes.TRIPLE:
             return self._compareTriples(other)
-        if len(self.cards == 2):
+        if self.type == HandTypes.DOUBLE:
             return self._comparePairs(other)
-        if len(self.cards == 1):
+        if self.type == HandTypes.SINGLE:
             return self._compareOnes(other)
+        
+        print("this isnt supposed to occur [in canPlay()]")
+        return False # if for some reason something is bad just print and return false

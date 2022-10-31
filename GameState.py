@@ -3,6 +3,7 @@ from Player import Player
 
 
 class GameState:
+
     def __init__(self, discarded: Hand, players: list[Player], current: list[Hand], currentPlayerIndex = 0,lastPlayerIndex = 0):
         self.discarded = discarded 
         self.players = players
