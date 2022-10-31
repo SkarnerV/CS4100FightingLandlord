@@ -18,7 +18,7 @@ class PlayableHand(Hand):
         assert self.isValidHand()
         self.type = self._setType()
 
-    def isValidHand():
+    def isValidHand(self):
         """
         This is a method for determining whether or not a given list of
         Card objects makes up a valid hand.
@@ -32,15 +32,15 @@ class PlayableHand(Hand):
         """
 
         # it looks ugly, but raw Boolean logic should be faster than if/else blocks
-        vals = [card.value for card in cards]
+        vals = [card.value for card in self.cards]
         vals.sort()
-        return (len(cards) == 1 or 
-                (len(cards) == 2 and (cards.count(cards[0].value) == 2
-                    or (16 in cards and 17 in cards))) or
-                (len(cards) == 3 and cards.count(cards[0].value) == 3) or
-                (len(cards) == 4 and (cards.count(cards[0].value) >= 3 or 
-                cards.count(cards[1].value) >= 3)) or
-                (len(cards == 5) and cards[4].value < 15 and vals == range(min(vals), max(vals) + 1)))
+        return (len(self.cards) == 1 or 
+                (len(self.cards) == 2 and (self.cards.count(self.cards[0].value) == 2
+                    or (16 in self.cards and 17 in self.cards))) or
+                (len(self.cards) == 3 and self.cards.count(self.cards[0].value) == 3) or
+                (len(self.cards) == 4 and (self.cards.count(self.cards[0].value) >= 3 or 
+                self.cards.count(self.cards[1].value) >= 3)) or
+                (len(self.cards) == 5 and self.cards[4].value < 15 and self.vals == range(min(vals), max(vals) + 1)))
 
     def _isRocket(self):
         """
