@@ -32,6 +32,21 @@ class Card:
         16,17 --> "JK"
         """
         return Card.valueMap[self.value]
+    
+    def getSuitAsChar(self):
+        """
+        Gets the character representation of a card's suit.
+        """
+        if self.suit == Suits.CLUB:
+            return '♣'
+        if self.suit == Suits.DIAMOND:
+            return '♦'
+        if self.suit == Suits.HEART:
+            return '♥'
+        if self.suit == Suits.SPADE:
+            return '♠'
+        
+        assert False
         
 
     def __eq__(self, other):
