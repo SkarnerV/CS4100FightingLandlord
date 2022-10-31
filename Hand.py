@@ -58,9 +58,9 @@ class Hand:
         collection = []
         for i in range(0,len(self.cards)-2):
             if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value:
-                for i in self.cards:
-                    if i != self.cards[i].value and i.suit != 'BJ' and i.suit != 'RJ':
-                        collection.push([self.cards[i],self.cards[i+1],self.cards[i+2]],i)
+                for c in self.cards:
+                    if c != self.cards[i].value and i.suit != 'BJ' and i.suit != 'RJ':
+                        collection.push([self.cards[i],self.cards[i+1],self.cards[i+2],c])
         return collection
 
     def getBomb(self):
