@@ -16,9 +16,10 @@ class Deck:
             # corresponds to values on non-joker cards
             for value in range(3, 16):
                 fullDeck.append(Card(suit, value))
-        # add jokers TODO what suits should jokers be?
-        fullDeck.append(Card(None, 16))
-        fullDeck.append(Card(None, 17))
+        # Black Joker - giving it a suit of spade since suit required
+        fullDeck.append(Card(Suits.SPADE, 16))
+        # Red Joker
+        fullDeck.append(Card(Suits.HEART, 17))
         random.shuffle(fullDeck)
 
         self.cards = fullDeck
