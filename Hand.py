@@ -2,6 +2,7 @@ from Card import Card
 from HandTypes import HandTypes
 from PlayableHand import PlayableHand
 
+
 class Hand:
     """
     A class for representing a hand of cards.
@@ -10,7 +11,7 @@ class Hand:
     cards       List[Card]
     """
     
-    def __init__(self, cards: List[Card]):
+    def __init__(self, cards: list[Card]):
         # cards is allowed to be empty during construction
         self.cards = cards
     
@@ -86,11 +87,13 @@ class Hand:
         
 
     
+
     def getPlayableHands(self, currHand=None):
         """
         Get all playable hands of a certain type that can be created with this hand's cards.
         Returns a list of PlayableHand objects of the given type.
         PARAMS:
+
         currHand        PlayableHand
         """
         # removes duplicates
@@ -129,5 +132,4 @@ class Hand:
             return ret
         
         return list(filter(lambda hand: hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
-                
 
