@@ -1,13 +1,14 @@
 from Hand import Hand
 from Player import Player
+from PlayableHand import PlayableHand
 
 
 class GameState:
 
-    def __init__(self, discarded: Hand, players: list[Player], current: list[Hand], currentPlayerIndex = 0,lastPlayerIndex = 0):
+    def __init__(self, discarded: Hand, players: list[Player], current: list[PlayableHand], currentPlayerIndex = 0,lastPlayerIndex = 0):
         self.discarded = discarded 
         self.players = players
-        self.current = current # list of hands
+        self.current = current # list of playablehands
         self.lastPlayerIndex = lastPlayerIndex # last player who puts down non empty Hand, 
         self.currentPlayerIndex = currentPlayerIndex # current player index to make an action
 
@@ -37,30 +38,13 @@ class GameState:
 
         # if this is a new round
         if(len(self.current) == 0):
-            actions.extend(currentHand.getSingle())
-            actions.extend(currentHand.getDouble())
-            actions.extend(currentHand.getTriple())
-            actions.extend(currentHand.getQuad())
-            actions.extend(currentHand.getBomb())
-            actions.extend(currentHand.getSequence())
-
+            actions.extend(currentHand.getPlayerable())
+        
         # if the round gets continued from lastPlayerIndex
         else:
-            currentCombo = self.current[len(self.current)-1]# the last hand for current round
-            if currentCombo.type() == 'SINGLE':
-                 actions.extend(currentHand.getSingle())
-            if currentCombo.type() == 'DOUBLE':    
-                actions.extend(currentHand.getDouble())
-            if currentCombo.type() == 'TRIPLE':
-                actions.extend(currentHand.getTriple())
-            if currentCombo.type() == 'QUAD':
-                actions.extend(currentHand.getTriple())
-            if currentCombo.type() == 'SEQUENCE':
-                actions.extend(currentHand.getSequence())
-
-            # always includes bombs and racket
-            actions.extend(currentHand.getBomb())
-            actions.extend(currentHand.getRacket())
+            currentCombo = self.current[len(self.current)-1]# the last playablehand for current round
+            actions.extend(currentHand.getPlayerable(currentCombo))
+            
 
         return actions
         
@@ -82,6 +66,7 @@ class GameState:
                     return +100
                 else: 
                     return -100
+        return 0
 
 
     # move the game to the next stage by placing a hand/pass in a round
@@ -93,14 +78,14 @@ class GameState:
         #current player
         currentPlayerIndex = self.toMove()
         # copy the current deck
-        newRound = self.current.copy()
+        newRound = PlayableHand(self.current.cards)
         # copy of the discarded deck
-        newDiscarded = self.discarded.copy()
+        newDiscarded = Hand(self.discarded.cards)
         # if everyone passes in this round: current play is empty and this round started wit next player 
         # clear the current deck 
         if len(hand.cards) == 0 and self.lastPlayerIndex == self.nextPlayer(currentPlayerIndex):
             # return the new state with current cleared
-            return GameState(newDiscarded,newPlayers,[],self.nextPlayer(self.currentPlayerIndex),self.lastPlayerIndex)
+            return GameState(newDiscarded,newPlayers,PlayableHand([]),self.nextPlayer(self.currentPlayerIndex),self.lastPlayerIndex)
 
         # if current play continues the round
         else:
@@ -109,7 +94,7 @@ class GameState:
             # append hand to cuurent deck: put played hand to current round
             newRound.hand.cards.append(hand)
             # *push the played hand to discarded list
-            newDiscarded.extend(hand)
+            newDiscarded.cards.extend(hand)
             # return a new start regarding to the changes to the fields
             return GameState(newDiscarded,newPlayers,newRound,self.nextPlayer(self.currentPlayerIndex),currentPlayerIndex)
         
