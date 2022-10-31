@@ -92,26 +92,26 @@ class PlayableHand(Hand):
         """
         Returns True if this PlayableHand is a valid 4-card (non-bomb) hand.
         """
-        return (len(cards) == 4 and (cards.count(cards[0].value) >= 3 or 
-                cards.count(cards[1].value) >= 3))
+        return (len(self.cards) == 4 and (self.cards.count(self.cards[0].value) >= 3 or 
+                self.cards.count(self.cards[1].value) >= 3))
 
     def _isTriple(self):
         """
         Returns True if this PlayableHand is a valid triple.
         """
-        return len(cards) == 3 and cards.count(cards[0].value) == 3
+        return len(self.cards) == 3 and self.cards.count(self.cards[0].value) == 3
 
     def _isDouble(self):
         """
         Returns True if this PlayableHand is a valid pair (double).
         """
-        return len(cards) == 2 and cards.count(cards[0].value) == 2
+        return len(self.cards) == 2 and self.cards.count(self.cards[0].value) == 2
 
     def _isSingle(self):
         """
         Returns True if this PlayableHand is a valid single card.
         """
-        return len(cards) == 1
+        return len(self.cards) == 1
 
     def _compareOnes(self, other):
         """
