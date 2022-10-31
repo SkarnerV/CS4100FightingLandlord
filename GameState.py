@@ -1,9 +1,9 @@
 from Hand import Hand
 from Player import Player
-from typing import List
+
 
 class GameState:
-    def __init__(self, discarded: Hand, players: List[Player], current: List[Hand], currentPlayerIndex = -1,lastPlayerIndex = -1):
+    def __init__(self, discarded: Hand, players: list[Player], current: list[Hand], currentPlayerIndex = -1,lastPlayerIndex = -1):
         self.discarded = discarded 
         self.players = players
         self.current = current # list of hands
@@ -40,68 +40,27 @@ class GameState:
         # initialize actions
         actions = []
 
-
-        def getSingle():
-            collection = []
-            for i in currentHand:
-                collection.push([i])
-            return collection
-
-        def getDouble():
-            collection = []
-            for i in range(0,len(currentHand)-1):
-                if currentHand[i].value == currentHand[i+1].value:
-                    collection.push([currentHand[i],currentHand[i+1]])
-            return collection
-
-        def getTriple():
-            collection = []
-            for i in range(0,len(currentHand)-2):
-                if currentHand[i].value == currentHand[i+1].value and currentHand[i+1].value == currentHand[i+2].value:
-                    collection.push([currentHand[i],currentHand[i+1],currentHand[i+2]])
-                    for i in currentHand:
-                        if i != currentHand[i].value and i.suit != 'BJ' and i.suit != 'RJ':
-                            collection.push([currentHand[i],currentHand[i+1],currentHand[i+2]],i)
-            return collection
-
-        def getBomb():
-            collection = []
-            for i in range(0,len(currentHand)-3):
-                if currentHand[i].value == currentHand[i+1].value and currentHand[i+1].value == currentHand[i+2].value and currentHand[i+2].value == currentHand[i+3].value:
-                    collection.push([currentHand[i],currentHand[i+1],currentHand[i+2],currentHand[i+3]])
-            if currentHand[len(currentHand-1)].suit == 'RJ' and currentHand[len(currentHand-2)].suit == 'BJ':
-                    collection.push([currentHand[len(currentHand-2)],currentHand[len(currentHand-1)]])
-            return collection
-        
-        def getSequence():
-            collection = []
-            for i in range(0,len(currentHand)-4):
-                if currentHand[i].value == currentHand[i+1].value+1 and currentHand[i+1].value == currentHand[i+2].value+1 and currentHand[i+2].value == currentHand[i+3].value+1 and currentHand[i+3].value == currentHand[i+4].value+1:
-                    if currentHand[i+4].suit != 'RJ' and currentHand[i+4].suit != 'BJ':
-                        collection.push([currentHand[i],currentHand[i+1],currentHand[i+2],currentHand[i+3],currentHand[i+4]])
-            return collection
-
         # if this is a new round
         if(len(self.current) == 0):
-            actions.extend(getSingle())
-            actions.extend(getDouble())
-            actions.extend(getTriple())
-            actions.extend(getBomb())
-            actions.extend(getSequence())
+            actions.extend(currentHand.getSingle())
+            actions.extend(currentHand.getDouble())
+            actions.extend(currentHand.getTriple())
+            actions.extend(currentHand.getBomb())
+            actions.extend(currentHand.getSequence())
 
         # if the round gets continued from lastPlayerIndex
         else:
             currentCombo = self.current[len(self.current)-1]# the last hand for current round
             if currentCombo.checkType() == 'single':
-                 actions.extend(getSingle())
+                 actions.extend(currentHand.getSingle())
             if currentCombo.checkType() == 'double':    
-                actions.extend(getDouble())
+                actions.extend(currentHand.getDouble())
             if currentCombo.checkType() == 'triple':
-                actions.extend(getTriple())
+                actions.extend(currentHand.getTriple())
             if currentCombo.checkType() == 'bomb':
-                actions.extend(getBomb())
+                actions.extend(currentHand.getBomb())
             if currentCombo.checkType() == 'sequence':
-                actions.extend(getSequence())
+                actions.extend(currentHand.getSequence())
 
         return actions
         
