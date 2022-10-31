@@ -47,6 +47,13 @@ class Hand:
         for i in range(0,len(self.cards)-2):
             if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value:
                 collection.push([self.cards[i],self.cards[i+1],self.cards[i+2]])
+        return collection
+
+
+    def getQuad(self):
+        collection = []
+        for i in range(0,len(self.cards)-2):
+            if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value:
                 for i in self.cards:
                     if i != self.cards[i].value and i.suit != 'BJ' and i.suit != 'RJ':
                         collection.push([self.cards[i],self.cards[i+1],self.cards[i+2]],i)
@@ -57,7 +64,11 @@ class Hand:
         for i in range(0,len(self.cards)-3):
             if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value and self.cards[i+2].value == self.cards[i+3].value:
                 collection.push([self.cards[i],self.cards[i+1],self.cards[i+2],self.cards[i+3]])
-            if self.cards[len(self.cards-1)].suit == 'RJ' and self.cards[len(self.cards-2)].suit == 'BJ':
+        return collection
+    
+    def getRocket(self):
+        collection = []
+        if self.cards[len(self.cards-1)].suit == 'RJ' and self.cards[len(self.cards-2)].suit == 'BJ':
                 collection.push([self.cards[len(self.cards-2)],self.cards[len(self.cards-1)]])
         return collection
         

@@ -3,7 +3,7 @@ from Player import Player
 
 
 class GameState:
-    def __init__(self, discarded: Hand, players: list[Player], current: list[Hand], currentPlayerIndex = -1,lastPlayerIndex = -1):
+    def __init__(self, discarded: Hand, players: list[Player], current: list[Hand], currentPlayerIndex = 0,lastPlayerIndex = 0):
         self.discarded = discarded 
         self.players = players
         self.current = current # list of hands
@@ -12,14 +12,8 @@ class GameState:
 
     # determine the next player to make action: using currentPlayerIndex
     def toMove(self):
-        # if the game just started, start with landlord player
-        if len(self.discarded) == 0:
-            for i in range(0,len(self.players)):
-                if self.players[i].role == 'LANDLORD': # check the lanlord and return landlord player index
-                    return i
-        # move to the next player from the last player
-        else: 
-            return self.currentPlayerIndex # for the next move +1 on the index of current player
+        
+        return self.currentPlayerIndex # for the next move +1 on the index of current player
    
     # helper function that is used to avoid duplicate
     # @return: the next player given current index
@@ -45,22 +39,27 @@ class GameState:
             actions.extend(currentHand.getSingle())
             actions.extend(currentHand.getDouble())
             actions.extend(currentHand.getTriple())
+            actions.extend(currentHand.getQuad())
             actions.extend(currentHand.getBomb())
             actions.extend(currentHand.getSequence())
 
         # if the round gets continued from lastPlayerIndex
         else:
             currentCombo = self.current[len(self.current)-1]# the last hand for current round
-            if currentCombo.checkType() == 'single':
+            if currentCombo.type() == 'SINGLE':
                  actions.extend(currentHand.getSingle())
-            if currentCombo.checkType() == 'double':    
+            if currentCombo.type() == 'DOUBLE':    
                 actions.extend(currentHand.getDouble())
-            if currentCombo.checkType() == 'triple':
+            if currentCombo.type() == 'TRIPLE':
                 actions.extend(currentHand.getTriple())
-            if currentCombo.checkType() == 'bomb':
-                actions.extend(currentHand.getBomb())
-            if currentCombo.checkType() == 'sequence':
+            if currentCombo.type() == 'QUAD':
+                actions.extend(currentHand.getTriple())
+            if currentCombo.type() == 'SEQUENCE':
                 actions.extend(currentHand.getSequence())
+
+            # always includes bombs and racket
+            actions.extend(currentHand.getBomb())
+            actions.extend(currentHand.getRacket())
 
         return actions
         
@@ -75,20 +74,14 @@ class GameState:
     
     # check role
     def getUtility(self):
-        currentPlayer = self.players[self.toMove()]
-
-        # if currentplayer has empty hand or the next player has empty hand with same role
-        if len(currentPlayer.hand) == 0 or (len(self.players[nextPlayerIndex].hand) == 0 and self.players[nextPlayerIndex].role == currentPlayer.role):
-            return +100
         
-        nextPlayerIndex = self.nextPlayer(self.toMove())
+        for i in self.players:
+            if len(i.hand) == 0:
+                if i.role == 'LANDLORD':
+                    return +100
+                else: 
+                    return -100
 
-        # if next player has empty hand and different role
-        if (len(self.players[nextPlayerIndex].hand) == 0 and self.players[nextPlayerIndex].role != currentPlayer.role):
-            return -100
-        
-        # if no one has empty hand
-        return 0
 
     # move the game to the next stage by placing a hand/pass in a round
     # @return: a new game state after placing a hand
@@ -106,7 +99,7 @@ class GameState:
         # clear the current deck 
         if len(hand.cards) == 0 and self.lastPlayerIndex == self.nextPlayer(currentPlayerIndex):
             # return the new state with current cleared
-            return GameState(newDiscarded,newPlayers,[],self.currentPlayerIndex+1,self.lastPlayerIndex)
+            return GameState(newDiscarded,newPlayers,[],self.nextPlayer(self.currentPlayerIndex),self.lastPlayerIndex)
 
         # if current play continues the round
         else:
@@ -117,5 +110,5 @@ class GameState:
             # *push the played hand to discarded list
             newDiscarded.extend(hand)
             # return a new start regarding to the changes to the fields
-            return GameState(newDiscarded,newPlayers,newRound,self.currentPlayerIndex+1,currentPlayerIndex)
+            return GameState(newDiscarded,newPlayers,newRound,self.nextPlayer(self.currentPlayerIndex),currentPlayerIndex)
         
