@@ -1,5 +1,7 @@
 from Card import Card
 from HandTypes import HandTypes
+from PlayableHand import PlayableHand
+
 
 class Hand:
     """
@@ -85,62 +87,49 @@ class Hand:
         
 
     
-    def getPlayableHands(self, type):
+
+    def getPlayableHands(self, currHand=None):
         """
         Get all playable hands of a certain type that can be created with this hand's cards.
         Returns a list of PlayableHand objects of the given type.
         PARAMS:
-        type        HandTypes
+
+        currHand        PlayableHand
         """
         # removes duplicates
-        self.cards = list(set(self.cards))
-        self.cards.sort(key=lambda c: c.value)
-        if type == HandTypes.SINGLE:
-            return [PlayableHand([card]) for card in self.cards]
-        
-        if type == Handtypes.DOUBLE:
-            ret = []
-            for i in range(len(self.cards) - 1):
-                if self.cards[i].value == self.cards[i + 1].value:
-                    ret.append(PlayableHand(self.cards[i:i+2]))
-            return ret
+        cards = list(set(self.cards))
+        cards.sort(key=lambda c: c.value)
+        ret = []
+        # add all types of hands to ret
+        ret.append([PlayableHand([card]) for card in cards])
 
-        if type == HandTypes.TRIPLE:
-            ret = []
-            for i in range(len(self.cards) - 2):
-                if self.cards[i].value == self.cards[i + 1].value and self.cards[i + 1].value == self.cards[i + 2].value:
-                    ret.append(PlayableHand(self.cards[i:i+3]))
+        for i in range(len(cards) - 1):
+            if cards[i].value == cards[i + 1].value:
+                ret.append(PlayableHand(cards[i:i+2]))
+        
+        for i in range(len(cards) - 2):
+            if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value:
+                ret.append(PlayableHand(cards[i:i+3]))
+        
+        for i in range(len(cards) - 2):
+            if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value:
+                for j in range(len(cards)):
+                    if cards[j].value != cards[i]:
+                        ret.append(PlayableHand([cards[i], cards[i + 1], cards[i + 2], cards[j]]))
+        
+        for i in range(len(cards) - 4):
+            if [c.value for c in cards[i:i+5]] == list(range(cards[i].value, cards)):
+                ret.append(cards[i:i+5])
+        
+        for i in range(len(cards) - 3):
+            if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value and cards[i + 2].value == cards[i + 3].value:
+                ret.append(PlayableHand(cards[i:i+4]))
+        
+        if sum(c.value for c in cards[-2:]) == 33:
+            ret.append(PlayableHand(cards[-2:]))
+        
+        if currHand is None:
             return ret
         
-        if type == HandTypes.QUAD:
-            ret = 0
-            for i in range(len(self.cards) - 2):
-                if self.cards[i].value == self.cards[i + 1].value and self.cards[i + 1].value == self.cards[i + 2].value:
-                    for j in range(len(self.cards)):
-                        if self.cards[j].value != self.cards[i]:
-                            ret.append(PlayableHand([self.cards[i], self.cards[i + 1], self.cards[i + 2], self.cards[j]]))
-            return ret
-        
-        # This will NOT RETURN DUPLICATE STRAIGHTS. This is because suits are irrelevant, so
-        # two straights that are the same except for suits are identical hands, so playing either
-        # will make no difference. However, since cards are removed after playing them, if you do
-        # have duplicate straights, you will still be able to play both of them at some point.
-        if type == handTypes.STRAIGHT:
-
-            ret = []
-            for i in range(len(self.cards) - 4):
-                if [c.value for c in self.cards[i:i+5]] == list(range(self.cards[i].value, self.cards)):
-                    ret.append(self.cards[i:i+5])
-            return ret
-
-        if type == HandTypes.BOMB:
-            ret = []
-            for i in range(len(self.cards) - 3):
-                if self.cards[i].value == self.cards[i + 1].value and self.cards[i + 1].value == self.cards[i + 2].value and self.cards[i + 2].value == self.cards[i + 3].value:
-                    ret.append(PlayableHand(self.cards[i:i+4]))
-            return ret
-        
-        if type == HandTypes.ROCKET:
-            if self.cards[-1].value == 17 and self.cards[-2].value == 16:
-                return [PlayableHand(self.cards[-2:])]
+        return list(filter(lambda hand: hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
 

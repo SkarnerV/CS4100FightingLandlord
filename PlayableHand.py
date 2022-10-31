@@ -10,20 +10,22 @@ class PlayableHand(Hand):
     It is implemented as a subclass of Hand, with additional methods ensuring
     that the hand is valid and comparing the hand to another possible hand.
 
-    PlayableHand.isValidHand(cards) should be called BEFORE creating a PlayableHand
+
+    isValidHand() should be called BEFORE creating a PlayableHand
+
     with a given hand of cards.
     """
 
     def __init__(self, cards):
         super().__init__(cards)
-        assert PlayableHand.isValidHand(self.cards)
+
+        assert self.isValidHand()
+
         self.type = self._setType()
 
-    
-    @staticmethod
-    def isValidHand(cards):
+    def isValidHand():
         """
-        This is a static method for determining whether or not a given list of
+        This is a method for determining whether or not a given list of
         Card objects makes up a valid hand.
         A hand is valid if it is a set of 1, 2, 3, 4, or 5 cards.
         A valid 1 card hand is any card.
