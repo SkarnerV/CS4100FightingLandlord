@@ -14,6 +14,9 @@ class Hand:
     def __init__(self, cards: list[Card]):
         # cards is allowed to be empty during construction
         self.cards = cards
+
+    def print(self):
+        print(self.cards)
     
     def addCard(self, card: Card):
         """
@@ -30,63 +33,6 @@ class Hand:
         """
         if card in self.cards:
             self.cards.remove(card)
-
-
-
-    def getSingle(self):
-        collection = []
-        for i in self.cards:
-            collection.push([i])
-        return collection
-
-    def getDouble(self):
-        collection = []
-        for i in range(0,len(self.cards)-1):
-            if self.cards[i].value == self.cards[i+1].value:
-                collection.push([self.cards[i],self.cards[i+1]])
-        return collection
-
-    def getTriple(self):
-        collection = []
-        for i in range(0,len(self.cards)-2):
-            if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value:
-                collection.push([self.cards[i],self.cards[i+1],self.cards[i+2]])
-        return collection
-
-
-    def getQuad(self):
-        collection = []
-        for i in range(0,len(self.cards)-2):
-            if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value:
-                for c in self.cards:
-                    if c != self.cards[i].value and i.suit != 'BJ' and i.suit != 'RJ':
-                        collection.push([self.cards[i],self.cards[i+1],self.cards[i+2],c])
-        return collection
-
-    def getBomb(self):
-        collection = []
-        for i in range(0,len(self.cards)-3):
-            if self.cards[i].value == self.cards[i+1].value and self.cards[i+1].value == self.cards[i+2].value and self.cards[i+2].value == self.cards[i+3].value:
-                collection.push([self.cards[i],self.cards[i+1],self.cards[i+2],self.cards[i+3]])
-        return collection
-    
-    def getRocket(self):
-        collection = []
-        if self.cards[len(self.cards-1)].suit == 'RJ' and self.cards[len(self.cards-2)].suit == 'BJ':
-                collection.push([self.cards[len(self.cards-2)],self.cards[len(self.cards-1)]])
-        return collection
-        
-    def getSequence(self):
-        collection = []
-        noDuplicate = list(set(self.cards))
-        for i in range(0,len(noDuplicate)-4):
-            if noDuplicate[i].value == noDuplicate[i+1].value+1 and noDuplicate[i+1].value == noDuplicate[i+2].value+1 and noDuplicate[i+2].value == noDuplicate[i+3].value+1 and noDuplicate[i+3].value == noDuplicate[i+4].value+1:
-                if noDuplicate[i+4].suit != 'RJ' and noDuplicate[i+4].suit != 'BJ' and noDuplicate[i+4].value != 15:
-                    collection.push([noDuplicate[i],noDuplicate[i+1],noDuplicate[i+2],noDuplicate[i+3],noDuplicate[i+4]])
-        return collection
-        
-
-    
 
     def getPlayableHands(self, currHand=None):
         """
@@ -134,3 +80,5 @@ class Hand:
         
         return list(filter(lambda hand: hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
 
+    def toString(self):
+        return ' '.join(map(lambda x: x.toString(), self.cards))

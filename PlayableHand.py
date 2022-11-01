@@ -1,8 +1,6 @@
-from Hand import Hand
-from Card import Card
 from HandTypes import HandTypes
 
-class PlayableHand(Hand):
+class PlayableHand:
     """
     A class representing a playable hand of cards.
     In other words, a PlayableHand consists of 1 to 5 cards that can be played
@@ -17,11 +15,12 @@ class PlayableHand(Hand):
     """
 
     def __init__(self, cards):
-        super().__init__(cards)
-
-        assert self.isValidHand()
+        self.cards = cards
 
         self.type = self._setType()
+    
+    def print(self):
+        print(self.cards)
 
     def isValidHand(self):
         """
@@ -43,7 +42,8 @@ class PlayableHand(Hand):
         Returns a HandTypes value based on self.cards().
         Used to set self.type to the correct value.
         """
-
+        
+        
         if self._isRocket():
             return HandTypes.ROCKET
         if self._isBomb():
@@ -58,7 +58,9 @@ class PlayableHand(Hand):
             return HandTypes.DOUBLE
         if self._isSingle():
             return HandTypes.SINGLE
-        
+        res = ''. join(map(lambda x: x.toString(),self.cards))
+        print(res)
+        print(len(self.cards))
         assert False # this should never be reached
 
 
@@ -77,35 +79,35 @@ class PlayableHand(Hand):
         """
 
         return (len(self.cards) == 4 and
-                [c.value for c in self.cards].count(self.cards[0].value) == 4)
+                self.getCardsValue().count(self.cards[0].value) == 4)
     
     def _isSequence(self):
         """
         Returns True if this PlayableHand is a valid sequence.
         """
-        vals = [card.value for card in self.cards]
+        vals = self.getCardsValue()
         vals.sort()
-        return (len(self.cards == 5) and self.cards[4].value < 15 and
+        return (len(self.cards)== 5and self.cards[4].value < 15 and
         vals == range(min(vals), max(vals) + 1))
 
     def _isQuad(self):
         """
         Returns True if this PlayableHand is a valid 4-card (non-bomb) hand.
         """
-        return (len(self.cards) == 4 and (self.cards.count(self.cards[0].value) >= 3 or 
-                self.cards.count(self.cards[1].value) >= 3))
+        return (len(self.cards) == 4 and (self.getCardsValue().count(self.cards[0].value) >= 3 or 
+                self.getCardsValue().count(self.cards[1].value) >= 3))
 
     def _isTriple(self):
         """
         Returns True if this PlayableHand is a valid triple.
         """
-        return len(self.cards) == 3 and self.cards.count(self.cards[0].value) == 3
+        return len(self.cards) == 3 and self.getCardsValue().count(self.cards[0].value) == 3
 
     def _isDouble(self):
         """
         Returns True if this PlayableHand is a valid pair (double).
         """
-        return len(self.cards) == 2 and self.cards.count(self.cards[0].value) == 2
+        return len(self.cards) == 2 and self.getCardsValue().count(self.cards[0].value) == 2
 
     def _isSingle(self):
         """
@@ -232,3 +234,16 @@ class PlayableHand(Hand):
         
         print("this isnt supposed to occur [in canPlay()]")
         return False # if for some reason something is bad just print and return false
+
+    def toString(self):
+        strings = []
+        for i in self.cards:
+            strings.append(i.toString())
+        print(strings)
+        return strings
+
+
+    # return the value of all cards
+    def getCardsValue(self):
+        
+        return [c.value for c in self.cards]

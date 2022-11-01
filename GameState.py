@@ -38,12 +38,12 @@ class GameState:
 
         # if this is a new round
         if(len(self.current) == 0):
-            actions.extend(currentHand.getPlayerable())
+            actions.extend(currentHand.getPlayableHands())
         
         # if the round gets continued from lastPlayerIndex
         else:
             currentCombo = self.current[len(self.current)-1]# the last playablehand for current round
-            actions.extend(currentHand.getPlayerable(currentCombo))
+            actions.extend(currentHand.getPlayableHands(currentCombo))
             
 
         return actions
@@ -53,7 +53,7 @@ class GameState:
     def isTerminal(self):
         for i in self.players:
 
-            if len(i.hand) == 0:
+            if len(i.hand.cards) == 0:
                 return i
         return -1
     
@@ -61,7 +61,7 @@ class GameState:
     def getUtility(self):
         
         for i in self.players:
-            if len(i.hand) == 0:
+            if len(i.hand.cards) == 0:
                 if i.role == 'LANDLORD':
                     return +100
                 else: 
@@ -71,14 +71,14 @@ class GameState:
 
     # move the game to the next stage by placing a hand/pass in a round
     # @return: a new game state after placing a hand
-    def generateSuccessor(self,hand):
+    def generateSuccessor(self,hand: PlayableHand):
 
         # copy the current player
         newPlayers = self.players.copy()
         #current player
         currentPlayerIndex = self.toMove()
         # copy the current deck
-        newRound = PlayableHand(self.current.cards)
+        newRound = self.current.copy()
         # copy of the discarded deck
         newDiscarded = Hand(self.discarded.cards)
         # if everyone passes in this round: current play is empty and this round started wit next player 
@@ -92,7 +92,7 @@ class GameState:
             # modify the current player's card: filter the hand that current player plays this round
             newPlayers[currentPlayerIndex].hand.cards = [i for i in self.players[currentPlayerIndex].hand.cards if i not in hand]
             # append hand to cuurent deck: put played hand to current round
-            newRound.hand.cards.append(hand)
+            newRound.append(hand)
             # *push the played hand to discarded list
             newDiscarded.cards.extend(hand)
             # return a new start regarding to the changes to the fields

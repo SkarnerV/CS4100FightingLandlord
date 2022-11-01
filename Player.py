@@ -22,7 +22,7 @@ class Player:
         """
         Uses user input to make a valid move and update state
         """
-        input(f'{self.name}\'s turn. Press any key to continue.\n')
+        input(f"{self.name}\'s turn. Press any key to continue.\n")
         #TODO need a method on hand (and card) that returns a string for display
         print(self.hand.print(), "\n")
 
@@ -32,3 +32,6 @@ class Player:
 
         # TODO need method that looks at user input and player's cards, produces a Hand object if possible
         # if action hand is not in actionOptions, loop and prompt user again
+    
+    def toString(self):
+        return self.name + " "+ self.hand.toString() + " "+self.role

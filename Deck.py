@@ -1,5 +1,5 @@
 import random
-
+from Hand import Hand
 from Card import Card
 from Suits import Suits
 
@@ -33,4 +33,4 @@ class Deck:
         dealtCards = self.cards[:numCards]
         self.cards = self.cards[numCards:]
 
-        return dealtCards
+        return Hand(dealtCards)

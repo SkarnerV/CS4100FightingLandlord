@@ -39,27 +39,28 @@ class Game:
         """
         Main control loop for game play
         """
-
-        while not self.state.isTerminal():
+        print(self.state.isTerminal())
+        while self.state.isTerminal() == -1:
             # TODO - need method on GameState that outputs string for display
 
             # Fetch next agent
             agentIndex = self.state.toMove()
-            agent = self.state.player[agentIndex]
+            agent = self.state.players[agentIndex]
 
             # Prompt agent for action - will be a Hand of cards
-            action = agent.getAction(self.state)
+            action = agent.makeMove(self.state)
 
             # Execute action
             self.moveHistory.append((agentIndex, action))
             self.state = self.state.generateSuccessor(action)
 
+            #print(self.state.players[0].toString())
             # Change display -- if the player did not pass, print the cards they played
-            if len(action.cards) > 0:
-                print(action.print())
+            # if len(action.cards) > 0:
+            #     print(action.print())
 
 
-def loadPlayer(playerName, playerType, initialCards: Hand, role):
+def loadPlayer(playerName, playerType, initialCards, role):
   """
    Instantiates a player/agent of the given type, initial hand, and player role
   :param playerName: name assigned to player (used when prompting a human player to make a move)

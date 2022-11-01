@@ -57,3 +57,6 @@ class Card:
     def __hash__(self):
         # override of hashing method
         return hash(("suit", self.suit, "value", self.value))
+
+    def toString(self):
+        return self.getSuitAsChar()+str(self.value)

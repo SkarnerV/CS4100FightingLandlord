@@ -1,5 +1,4 @@
 import random
-
 from Player import Player
 
 class Agent(Player):
@@ -30,4 +29,6 @@ class RandomAgent(Agent):
         Selects a random legal move
         """
         actionOptions = currState.getActions()
-        return random.choice(actionOptions)
+        action = random.choice(actionOptions)
+        print(action.cards)
+        return action
