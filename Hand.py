@@ -46,9 +46,8 @@ class Hand:
         cards = list(set(self.cards))
         cards.sort(key=lambda c: c.value)
         ret = []
-        ret.append([]) # PASS
         # add all types of hands to ret
-        ret.append([PlayableHand([card]) for card in cards])
+        ret.extend([PlayableHand([card]) for card in cards])
 
         for i in range(len(cards) - 1):
             if cards[i].value == cards[i + 1].value:
@@ -65,7 +64,7 @@ class Hand:
                         ret.append(PlayableHand([cards[i], cards[i + 1], cards[i + 2], cards[j]]))
         
         for i in range(len(cards) - 4):
-            if [c.value for c in cards[i:i+5]] == list(range(cards[i].value, cards)):
+            if [c.value for c in cards[i:i+5]] == list(range(cards[i].value, cards[i + 4].value)):
                 ret.append(cards[i:i+5])
         
         for i in range(len(cards) - 3):
@@ -76,9 +75,13 @@ class Hand:
             ret.append(PlayableHand(cards[-2:]))
         
         if currHand is None:
+            ret = [[]] + ret # pass
             return ret
         
-        return list(filter(lambda hand: hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
+        # print('RET: {}'.format(ret))
+        ret = list(filter(lambda hand: True if hand == [] else hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
+        ret = [[]] + ret # pass
+        return ret
 
     def toString(self):
         return ' '.join(map(lambda x: x.toString(), self.cards))

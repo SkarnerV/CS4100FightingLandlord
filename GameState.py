@@ -90,11 +90,11 @@ class GameState:
         # if current play continues the round
         else:
             # modify the current player's card: filter the hand that current player plays this round
-            newPlayers[currentPlayerIndex].hand.cards = [i for i in self.players[currentPlayerIndex].hand.cards if i not in hand]
+            newPlayers[currentPlayerIndex].hand.cards = [card for card in self.players[currentPlayerIndex].hand.cards if card not in hand.cards]
             # append hand to cuurent deck: put played hand to current round
             newRound.append(hand)
             # *push the played hand to discarded list
-            newDiscarded.cards.extend(hand)
+            newDiscarded.cards.extend(hand.cards)
             # return a new start regarding to the changes to the fields
             return GameState(newDiscarded,newPlayers,newRound,self.nextPlayer(self.currentPlayerIndex),currentPlayerIndex)
         
