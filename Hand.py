@@ -15,8 +15,6 @@ class Hand:
         # cards is allowed to be empty during construction
         self.cards = cards
 
-    def print(self):
-        print(self.cards)
     
     def addCard(self, card: Card):
         """
