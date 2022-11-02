@@ -109,17 +109,17 @@ class GameState:
         Returns a simple string representation of the current game state, including the top card of the
         current round and the number of cards in each player's hand
         """
-        # want to show what card is on top of the pile for this round
+        # Display what card is on top of the pile for this round
         currentHandStr = ''
 
-        # new round
+        # cards are in current - show top hand
         if len(self.current) > 0:
             lastHandPlayed = self.current[len(self.current)-1]
             currentHandStr = lastHandPlayed.toString()
 
         gameStateStr = "Last Played: " + currentHandStr
 
-        # also want to print the number of cards each player has
+        # Display the number of cards each player has
         for player in self.players:
             playerStr = f'{player.name} has {player.hand.getLength()} cards'
             gameStateStr += "\n" + playerStr
