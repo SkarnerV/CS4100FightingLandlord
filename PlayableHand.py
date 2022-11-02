@@ -239,6 +239,8 @@ class PlayableHand:
             return self._comparePairs(other)
         if self.type == HandTypes.SINGLE:
             return self._compareOnes(other)
+        if self.type == HandTypes.PASS:
+            return True
         
         print("this isnt supposed to occur [in canPlay()]")
         return False # if for some reason something is bad just print and return false
@@ -250,4 +252,7 @@ class PlayableHand:
         return [c.value for c in self.cards]
 
     def toString(self):
-        return ', '.join(map(lambda x: x.toString(), self.cards))
+        if self.type == HandTypes.PASS :
+            return "PASS"
+        else :
+            return ', '.join(map(lambda x: x.toString(), self.cards))

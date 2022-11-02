@@ -37,7 +37,7 @@ class GameState:
         actions = []
 
         # if this is a new round
-        if(len(self.current) == 0):
+        if len(self.current) == 0:
             actions.extend(currentHand.getPlayableHands())
         
         # if the round gets continued from lastPlayerIndex
@@ -87,7 +87,12 @@ class GameState:
             # return the new state with current cleared
             return GameState(newDiscarded, newPlayers, [], self.nextPlayer(self.currentPlayerIndex), self.lastPlayerIndex)
 
-        # if current play continues the round
+        # player passed, but round not over
+        elif len(hand.cards) == 0:
+            return GameState(newDiscarded, newPlayers, newRound, self.nextPlayer(self.currentPlayerIndex),
+                             self.lastPlayerIndex)
+
+        # player did not pass: update current and discard piles and continue round
         else:
             # modify the current player's card: filter the hand that current player plays this round
             newPlayers[currentPlayerIndex].hand.cards = [card for card in self.players[currentPlayerIndex].hand.cards if card not in hand.cards]

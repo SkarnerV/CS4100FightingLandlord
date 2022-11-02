@@ -49,7 +49,7 @@ class Game:
 
             # Prompt agent for action - will be a Hand of cards
             action = agent.makeMove(self.state)
-            print("Action move: " + action)
+            print("Action move: " + action.toString())
 
             # Execute action
             self.moveHistory.append((agentIndex, action))
