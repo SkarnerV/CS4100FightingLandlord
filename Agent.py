@@ -30,5 +30,4 @@ class RandomAgent(Agent):
         """
         actionOptions = currState.getActions()
         action = random.choice(actionOptions)
-        print(action.cards)
         return action

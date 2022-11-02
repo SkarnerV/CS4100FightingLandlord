@@ -12,7 +12,7 @@ class Card:
 
     # static variable to easily map card value to card
     valueMap = {3 : "3", 4 : "4", 5 : "5", 6 : "6", 7 : "7", 8 : "8", 9 : "9",10 : "10", 
-                11 : "J", 12 : "Q", 13 : "K", 14 : "A", 15 : "2", 16 : "JK", 17 : "JK"}
+                11 : "J", 12 : "Q", 13 : "K", 14 : "A", 15 : "2", 16 : "BJ", 17 : "RJ"}
 
     def __init__(self, suit: Suits, value: int):
         # may require edge cases for dealing with whatever suit we want the jokers to be
@@ -59,4 +59,4 @@ class Card:
         return hash(("suit", self.suit, "value", self.value))
 
     def toString(self):
-        return self.getSuitAsChar()+str(self.value)
+        return self.getSuitAsChar() + ' ' + self.getValueAsString()

@@ -14,7 +14,7 @@ class GameState:
 
     # determine the next player to make action: using currentPlayerIndex
     def toMove(self):
-        
+
         return self.currentPlayerIndex # for the next move +1 on the index of current player
    
     # helper function that is used to avoid duplicate
@@ -37,7 +37,7 @@ class GameState:
         actions = []
 
         # if this is a new round
-        if(len(self.current) == 0):
+        if len(self.current) == 0:
             actions.extend(currentHand.getPlayableHands())
         
         # if the round gets continued from lastPlayerIndex
@@ -52,14 +52,13 @@ class GameState:
     # @return: winner index or -1 if the game has not ended yet
     def isTerminal(self):
         for i in self.players:
-
             if len(i.hand.cards) == 0:
                 return i
         return -1
     
     # check role
     def getUtility(self):
-        
+
         for i in self.players:
             if len(i.hand.cards) == 0:
                 if i.role == 'LANDLORD':
@@ -85,9 +84,14 @@ class GameState:
         # clear the current deck 
         if len(hand.cards) == 0 and self.lastPlayerIndex == self.nextPlayer(currentPlayerIndex):
             # return the new state with current cleared
-            return GameState(newDiscarded,newPlayers,PlayableHand([]),self.nextPlayer(self.currentPlayerIndex),self.lastPlayerIndex)
+            return GameState(newDiscarded, newPlayers, [], self.nextPlayer(self.currentPlayerIndex), self.lastPlayerIndex)
 
-        # if current play continues the round
+        # player passed, but round not over
+        elif len(hand.cards) == 0:
+            return GameState(newDiscarded, newPlayers, newRound, self.nextPlayer(self.currentPlayerIndex),
+                             self.lastPlayerIndex)
+
+        # player did not pass: update current and discard piles and continue round
         else:
             # modify the current player's card: filter the hand that current player plays this round
             newPlayers[currentPlayerIndex].hand.cards = [card for card in self.players[currentPlayerIndex].hand.cards if card not in hand.cards]
@@ -96,5 +100,28 @@ class GameState:
             # *push the played hand to discarded list
             newDiscarded.cards.extend(hand.cards)
             # return a new start regarding to the changes to the fields
-            return GameState(newDiscarded,newPlayers,newRound,self.nextPlayer(self.currentPlayerIndex),currentPlayerIndex)
+            return GameState(newDiscarded, newPlayers, newRound, self.nextPlayer(self.currentPlayerIndex), currentPlayerIndex)
         
+
+
+    def toString(self):
+        """
+        Returns a simple string representation of the current game state, including the top card of the
+        current round and the number of cards in each player's hand
+        """
+        # Display what card is on top of the pile for this round
+        currentHandStr = ''
+
+        # cards are in current - show top hand
+        if len(self.current) > 0:
+            lastHandPlayed = self.current[len(self.current)-1]
+            currentHandStr = lastHandPlayed.toString()
+
+        gameStateStr = "Last Played: " + currentHandStr
+
+        # Display the number of cards each player has
+        for player in self.players:
+            playerStr = f'{player.name} has {player.hand.getLength()} cards'
+            gameStateStr += "\n" + playerStr
+
+        return gameStateStr

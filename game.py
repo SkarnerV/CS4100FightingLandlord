@@ -39,9 +39,10 @@ class Game:
         """
         Main control loop for game play
         """
-        print(self.state.isTerminal())
         while self.state.isTerminal() == -1:
-            # TODO - need method on GameState that outputs string for display
+            print()
+            print(self.state.toString())
+            print()
 
             # Fetch next agent
             agentIndex = self.state.toMove()
@@ -49,15 +50,17 @@ class Game:
 
             # Prompt agent for action - will be a Hand of cards
             action = agent.makeMove(self.state)
+            print(f'{agent.name}\'s move: {action.toString()}')
 
             # Execute action
             self.moveHistory.append((agentIndex, action))
             self.state = self.state.generateSuccessor(action)
 
-            #print(self.state.players[0].toString())
-            # Change display -- if the player did not pass, print the cards they played
-            # if len(action.cards) > 0:
-            #     print(action.print())
+        # game ended - print winner
+        winner = self.state.isTerminal()
+        print()
+        print(winner.name + " won!")
+        print()
 
 
 def loadPlayer(playerName, playerType, initialCards, role):
@@ -138,10 +141,9 @@ def runGames(landlordType, peasant1Type, peasant2Type, numGames):
     peasantsWinCount = totalGames - landlordWinCount # someone must get rid of all cards first, can simply subtract
 
     # win rate for landlord
+    print()
     landlordWinRate = landlordWinCount / float(totalGames)
     print('Landlord Win Rate:      %d/%d (%.2f)' % (landlordWinCount, totalGames, landlordWinRate))
-
-    print()
 
     # win rate for peasants
     peasantsWinRate = peasantsWinCount / float(totalGames)
