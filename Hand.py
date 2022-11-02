@@ -83,3 +83,6 @@ class Hand:
 
     def toString(self):
         return ', '.join(map(lambda x: x.toString(), self.cards))
+
+    def getLength(self):
+        return len(self.cards)

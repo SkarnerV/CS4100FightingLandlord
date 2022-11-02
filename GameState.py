@@ -52,7 +52,6 @@ class GameState:
     # @return: winner index or -1 if the game has not ended yet
     def isTerminal(self):
         for i in self.players:
-
             if len(i.hand.cards) == 0:
                 return i
         return -1
@@ -103,3 +102,26 @@ class GameState:
             # return a new start regarding to the changes to the fields
             return GameState(newDiscarded, newPlayers, newRound, self.nextPlayer(self.currentPlayerIndex), currentPlayerIndex)
         
+
+
+    def toString(self):
+        """
+        Returns a simple string representation of the current game state, including the top card of the
+        current round and the number of cards in each player's hand
+        """
+        # want to show what card is on top of the pile for this round
+        currentHandStr = ''
+
+        # new round
+        if len(self.current) > 0:
+            lastHandPlayed = self.current[len(self.current)-1]
+            currentHandStr = lastHandPlayed.toString()
+
+        gameStateStr = "Last Played: " + currentHandStr
+
+        # also want to print the number of cards each player has
+        for player in self.players:
+            playerStr = f'{player.name} has {player.hand.getLength()} cards'
+            gameStateStr += "\n" + playerStr
+
+        return gameStateStr
