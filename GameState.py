@@ -14,7 +14,7 @@ class GameState:
 
     # determine the next player to make action: using currentPlayerIndex
     def toMove(self):
-        
+
         return self.currentPlayerIndex # for the next move +1 on the index of current player
    
     # helper function that is used to avoid duplicate
@@ -59,7 +59,7 @@ class GameState:
     
     # check role
     def getUtility(self):
-        
+
         for i in self.players:
             if len(i.hand.cards) == 0:
                 if i.role == 'LANDLORD':
@@ -85,7 +85,7 @@ class GameState:
         # clear the current deck 
         if len(hand.cards) == 0 and self.lastPlayerIndex == self.nextPlayer(currentPlayerIndex):
             # return the new state with current cleared
-            return GameState(newDiscarded,newPlayers,PlayableHand([]),self.nextPlayer(self.currentPlayerIndex),self.lastPlayerIndex)
+            return GameState(newDiscarded, newPlayers, [], self.nextPlayer(self.currentPlayerIndex), self.lastPlayerIndex)
 
         # if current play continues the round
         else:
@@ -96,5 +96,5 @@ class GameState:
             # *push the played hand to discarded list
             newDiscarded.cards.extend(hand.cards)
             # return a new start regarding to the changes to the fields
-            return GameState(newDiscarded,newPlayers,newRound,self.nextPlayer(self.currentPlayerIndex),currentPlayerIndex)
+            return GameState(newDiscarded, newPlayers, newRound, self.nextPlayer(self.currentPlayerIndex), currentPlayerIndex)
         

@@ -58,6 +58,8 @@ class PlayableHand:
             return HandTypes.DOUBLE
         if self._isSingle():
             return HandTypes.SINGLE
+        if self._isPass():
+            return HandTypes.PASS
         res = ''. join(map(lambda x: x.toString(),self.cards))
         print(res)
         print(len(self.cards))
@@ -114,6 +116,12 @@ class PlayableHand:
         Returns True if this PlayableHand is a valid single card.
         """
         return len(self.cards) == 1
+
+    def _isPass(self):
+        """
+        returns True is this PlayableHand is empty
+        """
+        return len(self.cards) == 0
 
     def _compareOnes(self, other):
         """
@@ -235,15 +243,11 @@ class PlayableHand:
         print("this isnt supposed to occur [in canPlay()]")
         return False # if for some reason something is bad just print and return false
 
-    def toString(self):
-        strings = []
-        for i in self.cards:
-            strings.append(i.toString())
-        print(strings)
-        return strings
-
 
     # return the value of all cards
     def getCardsValue(self):
         
         return [c.value for c in self.cards]
+
+    def toString(self):
+        return ', '.join(map(lambda x: x.toString(), self.cards))

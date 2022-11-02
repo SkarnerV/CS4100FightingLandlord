@@ -28,7 +28,8 @@ class RandomAgent(Agent):
         """
         Selects a random legal move
         """
+        print("Agent's turn")
         actionOptions = currState.getActions()
         action = random.choice(actionOptions)
-        print(action.cards)
+        print(action)
         return action

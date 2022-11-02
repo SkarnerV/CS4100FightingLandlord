@@ -75,13 +75,16 @@ class Hand:
             ret.append(PlayableHand(cards[-2:]))
         
         if currHand is None:
-            ret = [[]] + ret # pass
+            ret.append(PlayableHand([])) # pass
             return ret
         
         # print('RET: {}'.format(ret))
         ret = list(filter(lambda hand: True if hand == [] else hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
-        ret = [[]] + ret # pass
+        ret.append(PlayableHand([])) # pass
         return ret
 
     def toString(self):
-        return ' '.join(map(lambda x: x.toString(), self.cards))
+        return ', '.join(map(lambda x: x.toString(), self.cards))
+
+    def __str__(self):
+        return ', '.join(map(lambda x: x.toString(), self.cards))
