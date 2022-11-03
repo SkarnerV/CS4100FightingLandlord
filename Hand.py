@@ -82,7 +82,6 @@ class Hand:
             ret.append(PlayableHand(cards[-2:]))
         
         if currHand is None:
-            ret.append(PlayableHand([])) # pass
             return ret
 
         # print('RET: {}'.format(ret))
