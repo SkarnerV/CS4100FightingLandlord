@@ -16,8 +16,8 @@ class PlayableHand:
 
     def __init__(self, cards):
         self.cards = cards
-
         self.type = self._setType()
+        assert self.isValidHand()
     
     def print(self):
         print(self.cards)
@@ -35,7 +35,8 @@ class PlayableHand:
         For a 5 card hand, 2's and jokers are not allowed.
         """
         return (self._isSingle() or self._isDouble() or self._isTriple() or
-                self._isQuad() or self._isSequence() or self._isBomb() or self._isRocket())
+                self._isQuad() or self._isSequence() or self._isBomb() or self._isRocket()
+                or self._isPass())
 
     def _setType(self):
         """
@@ -60,9 +61,11 @@ class PlayableHand:
             return HandTypes.SINGLE
         if self._isPass():
             return HandTypes.PASS
-        res = ''. join(map(lambda x: x.toString(),self.cards))
+        
+        res = ', '. join(map(lambda x: x.toString(),self.cards))
         print(res)
         print(len(self.cards))
+
         assert False # this should never be reached
 
 
@@ -89,8 +92,8 @@ class PlayableHand:
         """
         vals = self.getCardsValue()
         vals.sort()
-        return (len(self.cards)== 5and self.cards[4].value < 15 and
-        vals == range(min(vals), max(vals) + 1))
+        return (len(vals) == 5 and vals[4] < 15 and
+        vals == list(range(min(vals), max(vals) + 1)))
 
     def _isQuad(self):
         """

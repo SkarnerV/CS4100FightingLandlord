@@ -41,7 +41,8 @@ class Hand:
         currHand        PlayableHand
         """
         # removes duplicates
-        cards = list(set(self.cards))
+        cards = self.cards
+
         cards.sort(key=lambda c: c.value)
         ret = []
         # add all types of hands to ret
@@ -58,12 +59,20 @@ class Hand:
         for i in range(len(cards) - 2):
             if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value:
                 for j in range(len(cards)):
-                    if cards[j].value != cards[i]:
+                    if cards[j].value != cards[i].value:
                         ret.append(PlayableHand([cards[i], cards[i + 1], cards[i + 2], cards[j]]))
         
-        for i in range(len(cards) - 4):
-            if [c.value for c in cards[i:i+5]] == list(range(cards[i].value, cards[i + 4].value)):
-                ret.append(cards[i:i+5])
+        # remove cards with same value but different suit so that sequences work
+        complement = []
+        seqCards = []
+        for c in self.cards:
+            if c.value not in complement:
+                seqCards.append(c)
+                complement.append(c.value)
+        # print(complement)
+        for i in range(len(seqCards) - 4):
+            if [c.value for c in seqCards[i:i+5]] == list(range(seqCards[i].value, seqCards[i].value + 5)) and max(c.value for c in seqCards) < 15:
+                ret.append(PlayableHand(seqCards[i:i+5]))
         
         for i in range(len(cards) - 3):
             if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value and cards[i + 2].value == cards[i + 3].value:
