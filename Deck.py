@@ -33,4 +33,6 @@ class Deck:
         dealtCards = self.cards[:numCards]
         self.cards = self.cards[numCards:]
 
+        dealtCards.sort(key=lambda c: c.value)
+
         return Hand(dealtCards)
