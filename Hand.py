@@ -69,9 +69,8 @@ class Hand:
             if c.value not in complement:
                 seqCards.append(c)
                 complement.append(c.value)
-        # print(complement)
         for i in range(len(seqCards) - 4):
-            if [c.value for c in seqCards[i:i+5]] == list(range(seqCards[i].value, seqCards[i].value + 5)) and max(c.value for c in seqCards) < 15:
+            if [c.value for c in seqCards[i:i+5]] == list(range(seqCards[i].value, seqCards[i].value + 5)) and max(c.value for c in seqCards[i:i+5]) < 15:
                 ret.append(PlayableHand(seqCards[i:i+5]))
         
         for i in range(len(cards) - 3):
