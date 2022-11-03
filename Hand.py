@@ -77,7 +77,7 @@ class Hand:
             return ret
 
         # print('RET: {}'.format(ret))
-        ret = list(filter(lambda hand: True if hand == [] else hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type, ret))
+        ret = list(filter(lambda hand: True if hand == [] else (hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type) and hand._compareOnes(currHand), ret))
         ret.append(PlayableHand([])) # pass
         return ret
 

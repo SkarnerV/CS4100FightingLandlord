@@ -117,7 +117,7 @@ class GameState:
             lastHandPlayed = self.current[len(self.current)-1]
             currentHandStr = lastHandPlayed.toString()
 
-        gameStateStr = "Last Played: " + currentHandStr
+        gameStateStr = self.players[self.lastPlayerIndex].name + " Last Played: " + currentHandStr
 
         # Display the number of cards each player has
         for player in self.players:
