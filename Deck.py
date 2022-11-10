@@ -4,7 +4,7 @@ from Card import Card
 from Suits import Suits
 
 
-class Deck:
+class Deck(Hand):
     """
     Represents a full deck of 54 cards (2-Ace one of each suit, black joker, and red joker)
     Used to shuffle and deal cards out to players at the start of a new game
@@ -22,7 +22,8 @@ class Deck:
         fullDeck.append(Card(Suits.HEART, 17))
         random.shuffle(fullDeck)
 
-        self.cards = fullDeck
+        super().__init__(fullDeck) 
+       
 
     def deal(self, numCards: int):
         """

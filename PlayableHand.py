@@ -254,14 +254,20 @@ class PlayableHand:
         print("this isnt supposed to occur [in canPlay()]")
         return False # if for some reason something is bad just print and return false
 
-
-    # return the value of all cards
     def getCardsValue(self):
-        
+        """
+        Returns a list of values for the cards in this hand
+        """
         return [c.value for c in self.cards]
+
+    def getLength(self):
+        return len(self.cards)
+
 
     def toString(self):
         if self.type == HandTypes.PASS :
             return "PASS"
         else :
             return ', '.join(map(lambda x: x.toString(), self.cards))
+
+

@@ -1,11 +1,11 @@
 from Agent import Agent
-
+from Deck import Deck
 class ExpectimaxAgent(Agent):
 
     def __init__(self, name, hand, role, depth = 2):
         super().__init__(name, hand, role)
         self.depth = depth
-
+ 
     def makeMove(self, gameState):
         """
         Returns the expectimax action using self.depth and self.evaluationFunction
@@ -46,7 +46,8 @@ class ExpectimaxAgent(Agent):
         if state.isTerminal() > -1:
             return self.evaluationFunction(state)
         v = 0
-        for i in state.getActions():
+        predictedActions = self.predictActions(state)
+        for i in predictedActions:
             if state.toMove() == 2:
                 expect = self.max_value(state.generateSuccessor(i),depth+1)
             else: 
@@ -57,10 +58,27 @@ class ExpectimaxAgent(Agent):
             # beta = min(beta,v)
         # if len(state.getActions()) == 0:
         #     return 0
-        return v/len(state.getActions())
+        return v/len(predictedActions)
 
     def evaluationFunction(self,state):
         return state.getUtility()
     
     def copy(self):
         return ExpectimaxAgent(self.name,self.hand.copy(),self.role,self.depth)
+
+    def predictActions(self, state):
+        newDeck = Deck()
+        for i in self.hand.cards:
+            newDeck.removeCard(i)
+        for i in state.discarded.cards:
+            newDeck.removeCard(i)
+        
+        actions = [] # list of playablehand
+        if len(state.current) == 0:
+            actions.extend(newDeck.getPlayableHands())
+        # if the round gets continued from lastPlayerIndex
+        else:
+            currentCombo = state.current[-1]# the last playablehand for current round
+            actions.extend(newDeck.getPlayableHands(currentCombo))
+        
+        return actions

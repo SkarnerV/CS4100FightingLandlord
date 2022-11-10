@@ -6,6 +6,7 @@ from Hand import Hand
 from GameState import GameState
 from Player import Player
 from ExpectimaxAgent import ExpectimaxAgent
+from StrategyAgent import StrategyAgent
 
 
 class Game:
@@ -82,6 +83,8 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return RandomAgent(playerName, initialCards, role)
   elif playerType == 'expectimaxagent':
       return ExpectimaxAgent(playerName, initialCards, role)
+  elif playerType == 'strategyagent':
+      return StrategyAgent(playerName, initialCards, role)
   else:
       raise Exception("Unknown player type: " + playerType)
 
