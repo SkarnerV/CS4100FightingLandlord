@@ -5,6 +5,7 @@ from Deck import Deck
 from Hand import Hand
 from GameState import GameState
 from Player import Player
+from StrategyAgent import StrategyAgent
 
 
 class Game:
@@ -79,6 +80,8 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return Player(playerName, initialCards, role)
   elif playerType == 'randomagent':
       return RandomAgent(playerName, initialCards, role)
+  elif playerType == 'strategyagent':
+      return StrategyAgent(playerName, initialCards, role)
   else:
       raise Exception("Unknown player type: " + playerType)
 
