@@ -5,6 +5,7 @@ from Deck import Deck
 from Hand import Hand
 from GameState import GameState
 from Player import Player
+from ExpectimaxAgent import ExpectimaxAgent
 
 
 class Game:
@@ -57,7 +58,7 @@ class Game:
             self.state = self.state.generateSuccessor(action)
 
         # game ended - print winner
-        winner = self.state.isTerminal()
+        winner = self.state.players[self.state.isTerminal()]
         print()
         print(winner.name + " won!")
         print()
@@ -79,6 +80,8 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return Player(playerName, initialCards, role)
   elif playerType == 'randomagent':
       return RandomAgent(playerName, initialCards, role)
+  elif playerType == 'expectimaxagent':
+      return ExpectimaxAgent(playerName, initialCards, role)
   else:
       raise Exception("Unknown player type: " + playerType)
 

@@ -48,3 +48,6 @@ class Player:
     
     def toString(self):
         return self.name + " " + self.hand.toString() + " " + self.role
+
+    def copy(self):
+        return Player(self.name,self.hand.copy(),self.role)

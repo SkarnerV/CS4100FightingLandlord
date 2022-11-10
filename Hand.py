@@ -93,3 +93,9 @@ class Hand:
 
     def getLength(self):
         return len(self.cards)
+
+    def copy(self):
+        newCards = []
+        for i in self.cards:
+            newCards.append(i.copy())
+        return Hand(newCards)

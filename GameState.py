@@ -29,7 +29,7 @@ class GameState:
     # hand would be able to check types and weight
     # hand: list of hand or list
     # get all possible actions for current player
-    # @return: list of Hands that represent all possible actions that current player could take
+    # @return: list of PlayableHand that represent all possible actions that current player could take
     def getActions(self):
         # current hand for current player
         currentHand = self.players[self.toMove()].hand
@@ -51,8 +51,9 @@ class GameState:
     # check if the game over
     # @return: winner index or -1 if the game has not ended yet
     def isTerminal(self):
-        for i in self.players:
-            if len(i.hand.cards) == 0:
+        for i in range(len(self.players)):
+            # print(len(self.players[i].hand.cards))
+            if len(self.players[i].hand.cards) == 0:
                 return i
         return -1
     
@@ -73,13 +74,17 @@ class GameState:
     def generateSuccessor(self,hand: PlayableHand):
 
         # copy the current player
-        newPlayers = self.players.copy()
+        newPlayers = []
+        for i in self.players:
+          newPlayers.append(i.copy())
         #current player
         currentPlayerIndex = self.toMove()
         # copy the current deck
-        newRound = self.current.copy()
+        newRound = []
+        for i in self.current:
+            newRound.append(i.copy())
         # copy of the discarded deck
-        newDiscarded = Hand(self.discarded.cards)
+        newDiscarded = self.discarded.copy()
         # if everyone passes in this round: current play is empty and this round started wit next player 
         # clear the current deck 
         if len(hand.cards) == 0 and self.lastPlayerIndex == self.nextPlayer(currentPlayerIndex):

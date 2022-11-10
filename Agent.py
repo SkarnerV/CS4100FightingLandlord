@@ -31,3 +31,6 @@ class RandomAgent(Agent):
         actionOptions = currState.getActions()
         action = random.choice(actionOptions)
         return action
+    
+    def copy(self):
+        return RandomAgent(self.name,self.hand.copy(),self.role)
