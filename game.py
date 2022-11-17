@@ -5,7 +5,8 @@ from Deck import Deck
 from Hand import Hand
 from GameState import GameState
 from Player import Player
-from ExpectimaxAgent import ExpectimaxAgent
+from ExpectimaxAgentOne import ExpectimaxAgentOne
+from ExpectimaxAgentTwo import ExpectimaxAgentTwo
 from StrategyAgent import StrategyAgent
 
 
@@ -81,8 +82,10 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return Player(playerName, initialCards, role)
   elif playerType == 'randomagent':
       return RandomAgent(playerName, initialCards, role)
-  elif playerType == 'expectimaxagent':
-      return ExpectimaxAgent(playerName, initialCards, role)
+  elif playerType == 'expectimaxagent1':
+      return ExpectimaxAgentOne(playerName, initialCards, role)
+  elif playerType == 'expectimaxagent2':
+      return ExpectimaxAgentTwo(playerName, initialCards, role)
   elif playerType == 'strategyagent':
       return StrategyAgent(playerName, initialCards, role)
   else:

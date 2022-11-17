@@ -66,13 +66,13 @@ class GameState:
                     return +100
                 else: 
                     return -100
-
         landlordNumCards = self.players[0].hand.getLength()
         peasant1NumCards = self.players[1].hand.getLength()
         peasant2NumCards = self.players[2].hand.getLength()
 
         return min(peasant1NumCards,peasant2NumCards) - landlordNumCards
 
+    
 
     # move the game to the next stage by placing a hand/pass in a round
     # @return: a new game state after placing a hand
