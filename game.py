@@ -4,6 +4,7 @@ from Agent import RandomAgent
 from Deck import Deck
 from Hand import Hand
 from GameState import GameState
+from MCTSAgent import MCTSAgent
 from Player import Player
 from ExpectimaxAgentOne import ExpectimaxAgentOne
 from ExpectimaxAgentTwo import ExpectimaxAgentTwo
@@ -88,6 +89,8 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return ExpectimaxAgentTwo(playerName, initialCards, role)
   elif playerType == 'strategyagent':
       return StrategyAgent(playerName, initialCards, role)
+  elif playerType == 'mctsagent':
+      return MCTSAgent(playerName, initialCards, role)
   else:
       raise Exception("Unknown player type: " + playerType)
 

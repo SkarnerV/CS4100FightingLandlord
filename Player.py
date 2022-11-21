@@ -1,5 +1,4 @@
 
-
 class Player:
     """
     This class represents a player of a game of Fighting the Landlord.

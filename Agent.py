@@ -14,7 +14,8 @@ class Agent(Player):
         """
         Uses some type of calculation to make valid move and update state
         """
-
+    def convertToRandomAgent(self):
+        return RandomAgent(self.name, self.hand.copy(), self.role)
 
 class RandomAgent(Agent):
     """
