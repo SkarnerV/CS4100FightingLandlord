@@ -187,3 +187,9 @@ class Hand:
         for i in list:
             if i in targetList:
                 targetList.remove(i)
+
+    def getCardsValue(self):
+        """
+        Returns a list of values for the cards in this hand
+        """
+        return [c.value for c in self.cards]

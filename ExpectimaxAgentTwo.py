@@ -1,3 +1,4 @@
+import util
 from Agent import Agent
 from Deck import Deck
 from util import useStrategy
@@ -62,8 +63,13 @@ class ExpectimaxAgentTwo(Agent):
         #     return 0
         return v
 
-    def evaluationFunction(self,state):
-        return state.getUtility()
+    def evaluationFunction(self, state):
+        if state.isTerminal() > -1:
+            return state.getUtility()
+        else:
+            return util.peasant1NumCards(state) + util.peasant2NumCards(state) - util.landlordNumCards(state)\
+                   + util.landlordBestSingleCard(state) - util.landlordWorstSingleCard(state) + util.landlordBestDouble(state)\
+                   + util.landlordBestTriple(state) + util.landlordBestSequence(state) + 10 * util.newRoundLandlordTurn(state)
     
     def copy(self):
         return ExpectimaxAgentTwo(self.name,self.hand.copy(),self.role,self.depth)
