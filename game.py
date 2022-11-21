@@ -8,7 +8,7 @@ from MCTSAgent import MCTSAgent
 from Player import Player
 from ExpectimaxAgentOne import ExpectimaxAgentOne
 from ExpectimaxAgentTwo import ExpectimaxAgentTwo
-from StrategyAgent import StrategyAgent
+from Agent import StrategyAgent
 
 
 class Game:

@@ -37,9 +37,11 @@ class MCTSAgent(Agent):
 
 
     def simulateGame(self, nextState):
-        randomPlayers = list(map(lambda p: p.convertToRandomAgent(), nextState.players))
+        # Note: assumes MCTSAgent is the landlord and the two peasants make their move quickly (Random or StrategyAgent)
+        #nextPlayers = [nextState.players[0].convertToStrategyAgent(), nextState.players[1].copy(), nextState.players[2].copy()]
+        nextPlayers = list(map(lambda p: p.convertToStrategyAgent(), nextState.players))
         newRound = list(map(lambda hand: hand.copy(), nextState.current))
-        simulatedState = GameState(nextState.discarded.copy(), randomPlayers, newRound, nextState.currentPlayerIndex,
+        simulatedState = GameState(nextState.discarded.copy(), nextPlayers, newRound, nextState.currentPlayerIndex,
                   nextState.lastPlayerIndex)
 
         while simulatedState.isTerminal() == -1:

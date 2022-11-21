@@ -4,7 +4,7 @@ from util import useStrategy
 from PlayableHand import *
 class ExpectimaxAgentTwo(Agent):
 
-    def __init__(self, name, hand, role, depth = 2):
+    def __init__(self, name, hand, role, depth = 3):
         super().__init__(name, hand, role)
         self.depth = depth
  
