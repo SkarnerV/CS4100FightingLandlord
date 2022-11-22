@@ -13,12 +13,12 @@ class MCTSAgent(Agent):
     we select a move and then finish the game using random agents.
     """
 
-    def __init__(self, name, hand, role, trialsPerMove = 300):
+    def __init__(self, name, hand, role, trialsPerMove = 500):
         super().__init__(name, hand, role)
         self.trialsPerMove = trialsPerMove
 
     def makeMove(self, currState):
-        possibleActions = self.getBetterActions(currState)
+        possibleActions = currState.getActions()
         successRates = []
         trialsPerAction = ceil(self.trialsPerMove / len(possibleActions))
 
@@ -49,8 +49,15 @@ class MCTSAgent(Agent):
 
 
         landlordSimulation = StrategyAgent(None, nextState.players[0].hand.copy(), "LANDLORD")
-        peasant1Simulation = StrategyAgent(None, Hand(remainingCards[:numPeasant1Cards]), "PEASANT")
-        peasant2Simulation = StrategyAgent(None, Hand(remainingCards[numPeasant1Cards:]), "PEASANT")
+
+        peasant1Cards = remainingCards[:numPeasant1Cards]
+        peasant1Cards.sort(key=lambda c: c.value)
+        peasant1Simulation = StrategyAgent(None, Hand(peasant1Cards), "PEASANT")
+
+        peasant2Cards = remainingCards[numPeasant1Cards:]
+        peasant2Cards.sort(key=lambda c: c.value)
+        peasant2Simulation = StrategyAgent(None, Hand(peasant2Cards), "PEASANT")
+
         nextPlayers = [landlordSimulation, peasant1Simulation, peasant2Simulation]
         newRound = list(map(lambda hand: hand.copy(), nextState.current))
         simulatedState = GameState(nextState.discarded.copy(), nextPlayers, newRound, nextState.currentPlayerIndex,
