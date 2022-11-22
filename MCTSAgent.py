@@ -1,7 +1,10 @@
+import random
+from math import ceil
 from operator import itemgetter
 
 from GameState import GameState
-from Agent import Agent
+from Agent import Agent, StrategyAgent
+from Hand import Hand
 
 
 class MCTSAgent(Agent):
@@ -10,17 +13,18 @@ class MCTSAgent(Agent):
     we select a move and then finish the game using random agents.
     """
 
-    def __init__(self, name, hand, role, trialsPerMove = 50):
+    def __init__(self, name, hand, role, trialsPerMove = 300):
         super().__init__(name, hand, role)
         self.trialsPerMove = trialsPerMove
 
     def makeMove(self, currState):
         possibleActions = self.getBetterActions(currState)
         successRates = []
+        trialsPerAction = ceil(self.trialsPerMove / len(possibleActions))
 
         for action in possibleActions:
             numWins = 0
-            for i in range(self.trialsPerMove):
+            for i in range(trialsPerAction):
                 nextState = currState.generateSuccessor(action)
                 if (self.simulateGame(nextState) > 0):
                     numWins += 1
@@ -37,9 +41,17 @@ class MCTSAgent(Agent):
 
 
     def simulateGame(self, nextState):
-        # Note: assumes MCTSAgent is the landlord and the two peasants make their move quickly (Random or StrategyAgent)
-        #nextPlayers = [nextState.players[0].convertToStrategyAgent(), nextState.players[1].copy(), nextState.players[2].copy()]
-        nextPlayers = list(map(lambda p: p.convertToStrategyAgent(), nextState.players))
+        remainingCards = []
+        remainingCards.extend(nextState.players[1].hand.cards)
+        remainingCards.extend(nextState.players[2].hand.cards)
+        random.shuffle(remainingCards)
+        numPeasant1Cards = nextState.players[1].hand.getLength()
+
+
+        landlordSimulation = StrategyAgent(None, nextState.players[0].hand.copy(), "LANDLORD")
+        peasant1Simulation = StrategyAgent(None, Hand(remainingCards[:numPeasant1Cards]), "PEASANT")
+        peasant2Simulation = StrategyAgent(None, Hand(remainingCards[numPeasant1Cards:]), "PEASANT")
+        nextPlayers = [landlordSimulation, peasant1Simulation, peasant2Simulation]
         newRound = list(map(lambda hand: hand.copy(), nextState.current))
         simulatedState = GameState(nextState.discarded.copy(), nextPlayers, newRound, nextState.currentPlayerIndex,
                   nextState.lastPlayerIndex)

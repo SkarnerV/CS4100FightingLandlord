@@ -16,8 +16,7 @@ class Agent(Player):
         """
         Uses some type of calculation to make valid move and update state
         """
-    def convertToStrategyAgent(self):
-        return StrategyAgent(self.name, self.hand.copy(), self.role)
+
 
 class RandomAgent(Agent):
     """
