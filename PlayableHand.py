@@ -22,6 +22,12 @@ class PlayableHand:
     def print(self):
         print(self.cards)
 
+    def copy(self):
+        newCards = []
+        for i in self.cards:
+            newCards.append(i.copy())
+        return PlayableHand(newCards)
+
     def isValidHand(self):
         """
         This is a method for determining whether or the given list of

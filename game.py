@@ -4,8 +4,11 @@ from Agent import RandomAgent
 from Deck import Deck
 from Hand import Hand
 from GameState import GameState
+from MCTSAgent import MCTSAgent
 from Player import Player
-from StrategyAgent import StrategyAgent
+from ExpectimaxAgentOne import ExpectimaxAgentOne
+from ExpectimaxAgentTwo import ExpectimaxAgentTwo
+from Agent import StrategyAgent
 
 
 class Game:
@@ -58,7 +61,7 @@ class Game:
             self.state = self.state.generateSuccessor(action)
 
         # game ended - print winner
-        winner = self.state.isTerminal()
+        winner = self.state.players[self.state.isTerminal()]
         print()
         print(winner.name + " won!")
         print()
@@ -80,8 +83,14 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return Player(playerName, initialCards, role)
   elif playerType == 'randomagent':
       return RandomAgent(playerName, initialCards, role)
+  elif playerType == 'expectimaxagent1':
+      return ExpectimaxAgentOne(playerName, initialCards, role)
+  elif playerType == 'expectimaxagent2':
+      return ExpectimaxAgentTwo(playerName, initialCards, role)
   elif playerType == 'strategyagent':
       return StrategyAgent(playerName, initialCards, role)
+  elif playerType == 'mctsagent':
+      return MCTSAgent(playerName, initialCards, role)
   else:
       raise Exception("Unknown player type: " + playerType)
 

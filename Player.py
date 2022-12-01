@@ -1,5 +1,4 @@
 
-
 class Player:
     """
     This class represents a player of a game of Fighting the Landlord.
@@ -48,3 +47,6 @@ class Player:
     
     def toString(self):
         return self.name + " " + self.hand.toString() + " " + self.role
+
+    def copy(self):
+        return Player(self.name,self.hand.copy(),self.role)

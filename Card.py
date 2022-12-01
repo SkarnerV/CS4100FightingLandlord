@@ -60,3 +60,6 @@ class Card:
 
     def toString(self):
         return self.getSuitAsChar() + ' ' + self.getValueAsString()
+
+    def copy(self):
+        return Card(self.suit,self.value)

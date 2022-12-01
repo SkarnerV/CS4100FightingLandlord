@@ -65,7 +65,7 @@ class Hand:
         # remove cards with same value but different suit so that sequences work
         complement = []
         seqCards = []
-        for c in self.cards:
+        for c in cards:
             if c.value not in complement:
                 seqCards.append(c)
                 complement.append(c.value)
@@ -93,3 +93,103 @@ class Hand:
 
     def getLength(self):
         return len(self.cards)
+
+    def copy(self):
+        newCards = []
+        for i in self.cards:
+            newCards.append(i.copy())
+        return Hand(newCards)
+
+    def getBetterPlayableHands(self, currHand=None):
+        """
+        Get all playable hands of a certain type that can be created with this hand's cards.
+        Returns a list of PlayableHand objects of the given type.
+        PARAMS:
+
+        currHand        PlayableHand
+        """
+        # removes duplicates
+        cards = self.cards.copy()
+
+        cards.sort(key=lambda c: c.value)
+        ret = []
+        # add all types of hands to ret
+
+        # racket (two Jokers)
+        if sum(c.value for c in cards[-2:]) == 33:
+            
+            ret.append(PlayableHand(cards[-2:]))
+            self.removeCards(cards[-2:],cards)
+        
+        
+        # bomb
+        cardsToRemove = []
+        for i in range(len(cards) - 3):
+            if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value and cards[i + 2].value == cards[i + 3].value:
+                ret.append(PlayableHand(cards[i:i+4]))
+                cardsToRemove.extend(cards[i:i+4])
+    
+        self.removeCards(cardsToRemove,cards)
+    
+        cardsToRemove = []
+
+        # triple
+        for i in range(len(cards) - 2):
+            if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value:
+                ret.append(PlayableHand(cards[i:i+3]))
+                cardsToRemove.extend(cards[i:i+3])
+   
+        self.removeCards(cardsToRemove,cards)
+  
+        cardsToRemove = []
+        # remove cards with same value but different suit so that sequences work
+        complement = []
+        seqCards = []
+        for c in cards:
+            if c.value not in complement:
+                seqCards.append(c)
+                complement.append(c.value)
+        for i in range(len(seqCards) - 4):
+            if [c.value for c in seqCards[i:i+5]] == list(range(seqCards[i].value, seqCards[i].value + 5)) and max(c.value for c in seqCards[i:i+5]) < 15:
+                ret.append(PlayableHand(seqCards[i:i+5]))
+                cardsToRemove.append(cards[i:i+5])
+        self.removeCards(cardsToRemove,cards)
+        cardsToRemove = []
+        # double
+        for i in range(len(cards) - 1):
+            if cards[i].value == cards[i + 1].value:
+                ret.append(PlayableHand(cards[i:i+2]))
+                cardsToRemove.extend(cards[i:i+2])
+        self.removeCards(cardsToRemove,cards)
+        cardsToRemove = []
+
+        # single
+        ret.extend([PlayableHand([card]) for card in cards])
+
+
+        # quad
+        for i in range(len(cards) - 2):
+            if cards[i].value == cards[i + 1].value and cards[i + 1].value == cards[i + 2].value:
+                for j in range(len(cards)):
+                    if cards[j].value != cards[i].value:
+                        ret.append(PlayableHand([cards[i], cards[i + 1], cards[i + 2], cards[j]]))
+        
+        if currHand is None:
+            return ret
+
+        # print('RET: {}'.format(ret))
+        ret = list(filter(lambda hand: True if hand == [] else (hand.type == HandTypes.BOMB or hand.type == HandTypes.ROCKET or hand.type == currHand.type) and hand._compareOnes(currHand), ret))
+        ret.append(PlayableHand([])) # pass
+        return ret
+
+
+    def removeCards(self,list,targetList):
+        for i in list:
+            if i in targetList:
+                targetList.remove(i)
+
+    def getCardsValue(self):
+        """
+        Returns a list of values for the cards in this hand
+        """
+        return [c.value for c in self.cards]
