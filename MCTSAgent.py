@@ -76,19 +76,3 @@ class MCTSAgent(Agent):
 
         return simulatedState.getUtility()
 
-    def getBetterActions(self, state):
-        # current hand for current player
-        currentHand = self.hand
-        # initialize actions
-        actions = []
-
-        # if this is a new round
-        if len(state.current) == 0:
-            actions.extend(currentHand.getBetterPlayableHands())
-
-        # if the round gets continued from lastPlayerIndex
-        else:
-            currentCombo = state.current[len(state.current) - 1]  # the last playablehand for current round
-            actions.extend(currentHand.getBetterPlayableHands(currentCombo))
-
-        return actions

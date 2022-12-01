@@ -1,3 +1,4 @@
+import random
 from collections import Counter
 
 from HandTypes import HandTypes
@@ -170,3 +171,8 @@ def newRoundLandlordTurn(state):
     Returns 1 if it is the landlord's turn next with no current round, 0 otherwise
     """
     return 1 if (state.toMove() == 0 and len(state.current) == 0) else 0
+
+
+def flipCoin(p):
+    r = random.random()
+    return r < p
