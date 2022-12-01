@@ -133,9 +133,10 @@ def readCommand( argv ):
 
     return args
 
-def runGames(landlordType, peasant1Type, peasant2Type, numGames):
+def runGames(landlordType, peasant1Type, peasant2Type, numGames) -> tuple(int, int, int):
     """
     Run multiple games in succession and report landlord rate of winning
+    Returns a 3-tuple in the form (totalGames, landlordWinCount, peasantsWinCount)
     """
     games = []
 
@@ -152,17 +153,16 @@ def runGames(landlordType, peasant1Type, peasant2Type, numGames):
     landlordWinCount = landlordWins.count(True)
     peasantsWinCount = totalGames - landlordWinCount # someone must get rid of all cards first, can simply subtract
 
-    # win rate for landlord
-    print()
-    landlordWinRate = landlordWinCount / float(totalGames)
-    print('Landlord Win Rate:      %d/%d (%.2f)' % (landlordWinCount, totalGames, landlordWinRate))
-
-    # win rate for peasants
-    peasantsWinRate = peasantsWinCount / float(totalGames)
-    print('Peasants Win Rate:      %d/%d (%.2f)' % (peasantsWinCount, totalGames, peasantsWinRate))
+    return (totalGames, landlordWinCount, peasantsWinCount)
 
 
 
 if __name__ == '__main__':
     args = readCommand( sys.argv[1:] )
-    runGames( **args )
+    # runGames now returns the data, so we need to print it here in main
+    (totalGames, landlordWinCount, peasantsWinCount) = runGames( **args )
+    landlordWinRate = landlordWinCount / float(totalGames)
+    peasantsWinRate = peasantsWinCount / float(totalGames)
+    print()
+    print('Landlord Win Rate:      %d/%d (%.2f)' % (landlordWinCount, totalGames, landlordWinRate))
+    print('Peasants Win Rate:      %d/%d (%.2f)' % (peasantsWinCount, totalGames, peasantsWinRate))
