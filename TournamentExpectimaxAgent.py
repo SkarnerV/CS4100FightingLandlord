@@ -51,7 +51,7 @@ class TournamentExpectimaxAgent(Agent):
         if state.isTerminal() > -1:
             return self.evaluationFunction(state)
         v = 999999999
-        predictedActions = self.getBetterActions(state)
+        predictedActions = self.predictActions(state)
         for i in predictedActions:
             if state.toMove() == 2:
                 expect = self.max_value(state.generateSuccessor(i),depth+1)
@@ -115,3 +115,6 @@ class TournamentExpectimaxAgent(Agent):
             
 
         return actions
+
+    def copy(self):
+        return TournamentExpectimaxAgent(self.name, self.hand, self.role, self.features)

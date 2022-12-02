@@ -10,13 +10,15 @@ from ExpectimaxAgentOne import ExpectimaxAgentOne
 from ExpectimaxAgentTwo import ExpectimaxAgentTwo
 from Agent import StrategyAgent
 
+from TournamentExpectimaxAgent import TournamentExpectimaxAgent
+
 
 class Game:
     """
     The Game manages the control flow and solicits actions from agents.
     """
 
-    def __init__(self, landlordType, peasant1Type, peasant2Type):
+    def __init__(self, landlordType, peasant1Type, peasant2Type, features=None):
         # shuffle and deal deck
         deck = Deck()
 
@@ -27,8 +29,8 @@ class Game:
 
         # create players with dealt hands of cards
         landlord = loadPlayer("Landlord", landlordType, landlordCards, "LANDLORD")
-        peasant1 = loadPlayer("Peasant 1", peasant1Type, peasant1Cards, "PEASANT")
-        peasant2 = loadPlayer("Peasant 2", peasant2Type, peasant2Cards, "PEASANT")
+        peasant1 = loadPlayer("Peasant 1", peasant1Type, peasant1Cards, "PEASANT", features)
+        peasant2 = loadPlayer("Peasant 2", peasant2Type, peasant2Cards, "PEASANT", features)
 
 
         discarded = Hand([]) # discard pile initially empty
@@ -67,7 +69,7 @@ class Game:
         print()
 
 
-def loadPlayer(playerName, playerType, initialCards, role):
+def loadPlayer(playerName, playerType, initialCards, role, features=None):
   """
    Instantiates a player/agent of the given type, initial hand, and player role
   :param playerName: name assigned to player (used when prompting a human player to make a move)
@@ -91,6 +93,8 @@ def loadPlayer(playerName, playerType, initialCards, role):
       return StrategyAgent(playerName, initialCards, role)
   elif playerType == 'mctsagent':
       return MCTSAgent(playerName, initialCards, role)
+  elif playerType == 'tournamentagent' and features is not None:
+      return TournamentExpectimaxAgent(playerName, initialCards, role, features)
   else:
       raise Exception("Unknown player type: " + playerType)
 
@@ -133,7 +137,7 @@ def readCommand( argv ):
 
     return args
 
-def runGames(landlordType, peasant1Type, peasant2Type, numGames) -> tuple(int, int, int):
+def runGames(landlordType, peasant1Type, peasant2Type, numGames, features=None):
     """
     Run multiple games in succession and report landlord rate of winning
     Returns a 3-tuple in the form (totalGames, landlordWinCount, peasantsWinCount)
@@ -142,7 +146,7 @@ def runGames(landlordType, peasant1Type, peasant2Type, numGames) -> tuple(int, i
 
     # run all games
     for i in range(numGames):
-        game = Game(landlordType, peasant1Type, peasant2Type)
+        game = Game(landlordType, peasant1Type, peasant2Type, features)
         game.run()
         games.append(game)
 
